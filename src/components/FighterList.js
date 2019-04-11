@@ -9,6 +9,7 @@ import fighters from "./fighterlist/characters";
 function translate(fighter) {
   return {
     header: fighter.id + " - " + fighter.fighter_name,
+    meta: fighter.title,
     href: "/fighters/" + fighter.url,
     image: fighter.image
   };

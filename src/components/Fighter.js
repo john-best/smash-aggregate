@@ -5,23 +5,87 @@ import {
   Icon,
   Container,
   Card,
-  Dropdown,
   Segment,
-  Embed,
   Header,
   List,
   Image
 } from "semantic-ui-react";
-import fighters from "./fighterlist/characters";
 import { FaDiscord } from "react-icons/fa";
 
-function translate(fighter) {
-  return {
-    key: fighter.url,
-    value: fighter.url,
-    text: fighter.fighter_name,
-    image: { avatar: true, src: fighter.icon }
-  };
+import { Matchup } from "./common/Matchup";
+
+let data = {
+  icon: "/fighters_icon/zero_suit_samus.png",
+  fighter_name: "Zero Suit Samus",
+  fighter_url: "zero_suit_samus",
+  discord_url: "#",
+  kh_url: "#",
+  ssbw_url: "#",
+
+  description:
+    "she's not smash 4 zss but she's still good (but buff her anyways)",
+  matchups: { mario: "", donkey_kong: "" },
+
+  segments: [
+    {
+      id: 0,
+      type: "list",
+      title: "Videos of Interest",
+      data: [
+        {
+          title: "marss vs light at some local",
+          type: "youtube",
+          url: "#",
+          id: 0
+        },
+        { title: "twitter combo video", type: "twitter", url: "#", id: 1 },
+        {
+          title: "document on why wuhu island should be legal",
+          type: "linkify",
+          url: "#",
+          id: 2
+        }
+      ]
+    },
+    {
+      id: 1,
+      type: "text",
+      title: "some information that might interest you",
+      data: "this website sucks! why can't someone who actually knows how to make websites work on this???"
+    }
+  ]
+};
+
+function generate_segements(segments) {
+  return segments.map(generate_segment);
+}
+
+function generate_segment(segment) {
+  if (segment.type == "list") {
+    return (
+      <Segment key={segment.id}>
+        <Header>{segment.title}</Header>
+        <List divided relaxed selection>
+          {segment.data.map(generate_list)}
+        </List>
+      </Segment>
+    );
+  }
+
+  return (
+      <Segment key={segment.id}>
+      <Header> {segment.title} </Header>
+      <List divided relaxed selection>
+        <p>{segment.data}</p>
+      </List>
+    </Segment>
+  );
+}
+
+function generate_list(item, index) {
+  return (
+    <List.Item key={item.id} icon={item.type} content={<a href={item.url}>{item.title}</a>} />
+  );
 }
 
 class Fighter extends Component {
@@ -29,37 +93,22 @@ class Fighter extends Component {
     super(props);
 
     // we could load from database for name
-    document.title = "Smash Aggregate - Zero Suit Samus";
-    this.state = {
-      opponent: "",
-      matchup_text: ""
-    };
+    document.title = "Smash Aggregate - " + data.fighter_name;
   }
-
-  handleChangeMatchup = (event, data) => {
-    if (data.value !== -1) {
-      this.setState({
-        opponent: data.value,
-        matchup_text:
-          "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa strong. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede link mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi."
-      });
-    }
-  };
 
   // TODO: load from database, but we don't actually have a databse yet lmao
   // for now, just generate how the webpage SHOULD look like!
-  // actual todo: convert the data in these into actual data so we can smoothly transition once we start pulling from 
-  
+  // actual todo: convert the data in these into actual data so we can smoothly transition once we start pulling from
+
   // might need to split some stuff up to make it easier since Fighter is just going to be the bulk of this webapp
   render() {
-    let options = fighters.map(translate);
-    options.unshift({ key: "-1", value: "", text: "Select Fighter" });
-
     return (
       <div>
         <Navbar active="fighters" />
         <Container>
-          <Header><Image avatar src="/fighters_icon/zero_suit_samus.png" />Zero Suit Samus </Header>
+          <Header>
+            <Image avatar src={data.icon} /> {data.fighter_name}{" "}
+          </Header>
           <Message
             header="Work In Progress!"
             content="This page currently serves as an example of what a fighter page could look like. Nothing is set in stone yet."
@@ -68,11 +117,11 @@ class Fighter extends Component {
 
           <Segment>
             <Header> Description </Header>
-            <p>she's not smash 4 zss but she's still good (but buff her anyways)</p>
+            <p>{data.description}</p>
           </Segment>
 
           <Card.Group centered={true} itemsPerRow={3}>
-            <Card href="#">
+            <Card href={data.discord_url}>
               <Card.Content>
                 <Card.Header>
                   <FaDiscord /> Discord
@@ -84,89 +133,25 @@ class Fighter extends Component {
             </Card>
             <Card
               header="Frame Data (KH)"
-              href="#"
-              description="Kurogane Hammer's frame data and attributes for Zero Suit Samus."
+              href={data.kh_url}
+              description={
+                "Kurogane Hammer's frame data and attributes for " +
+                data.fighter_name +
+                "."
+              }
             />
 
             <Card
               header="SSBWiki"
-              href="#"
-              description="Changes, Patches, etc. for Zero Suit Samus."
+              href={data.ssbw_url}
+              description={
+                "Changes, Patches, etc. for " + data.fighter_name + "."
+              }
             />
           </Card.Group>
 
-          <Segment>
-            <Header> Matchups </Header>
-            <Dropdown
-              placeholder="Select Fighter"
-              fluid
-              search
-              selection
-              options={options}
-              onChange={this.handleChangeMatchup}
-            />
-            <br />
-            <p>{this.state.matchup_text}</p>
-          </Segment>
-
-          <Segment>
-            <Header> Youtube Videos </Header>
-            <List divided relaxed selection>
-              <List.Item
-                icon="youtube"
-                content={<a href="#">Orio's Video on Flip Kick</a>}
-              />
-              <List.Item
-                icon="youtube"
-                content={
-                  <a href="#">
-                    Overclocked Ultimate (W.Finals) - Marss vs Light
-                  </a>
-                }
-              />
-              <List.Item
-                icon="youtube"
-                content={<a href="#">Watch this epic ZSS showcase video</a>}
-              />
-              <List.Item icon="youtube" content={<a href="#">etc</a>} />
-            </List>
-          </Segment>
-
-          <Segment>
-            <Header> Twitter Posts </Header>
-            <List divided relaxed selection>
-              <List.Item
-                icon="twitter"
-                content={<a href="#">Flip Kick Momentum Cancelling</a>}
-              />
-              <List.Item
-                icon="twitter"
-                content={<a href="#">Instant Tether Trump</a>}
-              />
-              <List.Item icon="twitter" content={<a href="#">etc</a>} />
-            </List>
-          </Segment>
-
-          <Segment>
-            <Header> Useful Links </Header>
-            <List divided relaxed selection>
-              <List.Item
-                icon="linkify"
-                content={
-                  <a href="#">Frame Advantage/Disadvantage on Attacks</a>
-                }
-              />
-              <List.Item
-                icon="linkify"
-                content={<a href="#">ZSS Labs Ultimate (%labs)</a>}
-              />
-              <List.Item
-                icon="linkify"
-                content={<a href="#">ZSS Combo Sheet</a>}
-              />
-              <List.Item icon="linkify" content={<a href="#">etc</a>} />
-            </List>
-          </Segment>
+          <Matchup />
+          {generate_segements(data.segments)}
         </Container>
       </div>
     );
