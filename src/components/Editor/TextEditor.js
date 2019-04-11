@@ -4,16 +4,16 @@ import {
   Label
 } from "semantic-ui-react";
 
-import TextareaAutosize from "react-textarea-autosize"
+import TextareaAutosize from "react-textarea-autosize";
+import ReactMarkdown from "react-markdown";
 
-class TextEditor extends React.Component {
+class TextEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
       text: props.text,
     };
   }
-
 
   render() {
     return (
@@ -22,11 +22,11 @@ class TextEditor extends React.Component {
             control={TextareaAutosize}
             useCacheForDOMMeasurements
             label={<Label ribbon>Description</Label>}
-            placeholder="You see this nair?"
+            placeholder="You can use Markdown here (most of it, anyways)"
             value={this.state.text}
-            onChange={ e => this.setState({ text: e.target.value })}
+            onChange={ e => this.setState({ [e.target.name]: e.target.value })}
             name="text"
-          /> : this.state.text}
+          /> : <ReactMarkdown source={this.state.text} />}
       </>
     );
   }

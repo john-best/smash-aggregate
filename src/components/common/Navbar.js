@@ -3,7 +3,7 @@ import { Button, Menu } from "semantic-ui-react";
 import { FaDiscord } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-export default class Navbar extends React.Component {
+export default class Navbar extends Component {
   constructor(props) {
     super(props);
     this.state = { activeItem: this.props.active };

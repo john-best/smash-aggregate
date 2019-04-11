@@ -6,22 +6,20 @@ import { Card } from "semantic-ui-react";
 // so we can probably store the fighter list here instead of pulling from db to save up on lookup time or something
 import fighters from "./fighterlist/characters";
 
-function translate(fighter) {
-  return {
-    header: fighter.id + " - " + fighter.fighter_name,
-    meta: fighter.title,
-    href: "/fighters/" + fighter.url,
-    image: fighter.image
-  };
-}
-
 class FighterList extends Component {
   constructor(props) {
     super(props);
     document.title = "Smash Aggregate - Fighters";
   }
   render() {
-    const items = fighters.map(translate);
+    const items = fighters.map(fighter => {
+      return {
+        header: fighter.id + " - " + fighter.fighter_name,
+        meta: fighter.title,
+        href: "/fighters/" + fighter.url,
+        image: fighter.image
+      };
+    });
     return (
       <div>
         <Navbar active="fighters" />

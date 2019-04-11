@@ -5,8 +5,6 @@ import {
   Button,
   Segment,
   Divider,
-  Dropdown,
-  Label,
   Form,
   Header
 } from "semantic-ui-react";
@@ -16,14 +14,16 @@ let segOptions = [
   { key: "links", value: "links", text: "Links" }
 ];
 
-class SegmentEditor extends React.Component {
+class SegmentEditor extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       edit: false,
       type: this.props.type,
-      title: ""
+      title: this.props.title,
+      text: this.props.text,
+      links: this.props.links
     };
   }
   onChange = (event, target) => {
@@ -34,11 +34,13 @@ class SegmentEditor extends React.Component {
     this.setState({ edit: !this.state.edit });
   };
 
-  handleChangeType = (event, target) => {
-    this.setState({
-      type: target.value
-    });
-  };
+  handleMove =(event, target) => {
+      this.props.move(this.props.index, target.direction)
+  }
+  
+  handleRemove = (event, target) => {
+      this.props.remove(this.props.index)
+  }
 
   render() {
     return (
@@ -47,15 +49,18 @@ class SegmentEditor extends React.Component {
           {this.state.edit ? (
             <Form.Group>
               <Form.Select
+                disabled={this.props.textAreaOnly}
                 label="Type"
                 selection
                 options={segOptions}
-                onChange={this.handleChangeType}
+                onChange={this.onChange}
                 value={this.state.type}
+                name="type"
                 width={2}
                 fluid
               />
               <Form.Input
+                disabled={this.props.textAreaOnly}
                 label="Title"
                 value={this.state.title}
                 onChange={this.onChange}
@@ -69,13 +74,13 @@ class SegmentEditor extends React.Component {
 
           {this.state.type === "links" ? (
             <LinkEditor
-              links={[]}
+              links={this.props.links}
               deleteThis={() => console.log("delete requested")}
               edit={this.state.edit}
             />
           ) : (
             <TextEditor
-              text=""
+              text={this.props.text}
               deleteThis={() => console.log("delete requested")}
               edit={this.state.edit}
             />
@@ -87,18 +92,18 @@ class SegmentEditor extends React.Component {
           ) : (
             <Button onClick={this.toggleEdit}>Edit</Button>
           )}
-          {this.state.edit ? (
+          {this.state.edit && !this.props.textAreaOnly ? (
             <span>
               <Button.Group floated="right">
-                <Button width={1} icon="delete" color="red" width={1} />
+                <Button width={1} icon="delete" color="red" onClick={this.handleRemove}/>
               </Button.Group>
               <Button.Group floated="right">
-                <Button width={1} icon="arrow up" width={1} />
-                <Button width={1} icon="arrow down" width={1} />
+                <Button width={1} icon="arrow up"  direction="up" onClick={this.handleMove}/>
+                <Button width={1} icon="arrow down" direction="down" onClick={this.handleMove}/>
               </Button.Group>
             </span>
           ) : (
-            ""
+            null
           )}
         </Form>
       </Segment>
