@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Form, Button, Label, List } from "semantic-ui-react";
+import shortid from "shortid";
 
 let formOptions = [
   { key: "twitter", value: "twitter", text: "Twitter" },
@@ -30,7 +31,7 @@ class LinkEditor extends Component {
           <>
             <Label ribbon>Links</Label>
             {this.state.links.map((link, index) => (
-              <Form.Group key={index}>
+              <Form.Group key={shortid.generate()}>
                 <Form.Select
                   options={formOptions}
                   width={2}
@@ -71,7 +72,7 @@ class LinkEditor extends Component {
           <List divided relaxed selection>
             {this.state.links.map((link, index) => (
               <List.Item
-                key={index}
+              key={shortid.generate()}
                 icon={link.type}
                 content={<a href={link.url}>{link.title}</a>}
               />

@@ -15,6 +15,7 @@ import { Matchup } from "./common/Matchup";
 import { FaDiscord } from "react-icons/fa";
 import { Link } from "react-router-dom"
 import { data } from "./tempdata"
+import shortid from "shortid";
 
 class FighterEdit extends Component {
   constructor(props) {
@@ -40,31 +41,31 @@ class FighterEdit extends Component {
       return
     }
 
-    let segment = this.state.data.segments[segment_index];
     let new_segments = [...this.state.data.segments]
-
-    // delete 
-    new_segments.splice(segment_index, 1);
-
-    // insert
-    new_segments.splice(direction === "up" ? segment_index - 1 : segment_index, 0, segment);
-    let new_data = { ...this.state.data, segments: new_segments }
-    this.setState({data: new_data})
+    new_segments.splice(direction === "up" ? segment_index - 1 : segment_index + 1, 0, new_segments.splice(segment_index, 1)[0]);
+    this.setState({data: { ...this.state.data, segments: new_segments }})
+    console.log(new_segments)
   }
 
   handleAdd = () => {
     let new_segments = [...this.state.data.segments]
-    new_segments.push({ type: "text", title: "", text: "" })
-    let new_data = { ...this.state.data, segments: new_segments }
-    this.setState({data: new_data})
+    new_segments.push({ type: "text", title: "", text: "", edit: true })
+    this.setState({data: { ...this.state.data, segments: new_segments }})
   }
 
   handleRemove = (segment_index) => {
     console.log("removing " + segment_index)
     let new_segments = [...this.state.data.segments]
     console.log(new_segments.splice(segment_index, 1));
-    let new_data = { ...this.state.data, segments: new_segments }
-    this.setState({data: new_data})
+    this.setState({data: { ...this.state.data, segments: new_segments }})
+  }
+
+  handleEdit = (segment_index, isEdit) => {
+    let new_segments = [...this.state.data.segments]
+    new_segments[segment_index].edit = isEdit;
+
+    console.log(new_segments)
+    this.setState({data: { ...this.state.data, segments: new_segments }})
   }
 
   // TODO: load from database, but we don't actually have a databse yet lmao
@@ -73,6 +74,7 @@ class FighterEdit extends Component {
 
   // might need to split some stuff up to make it easier since Fighter is just going to be the bulk of this webapp
   render() {
+    console.log("rendered state:")
     console.log(this.state)
     let options = fighters.map(fighter => {
       return {
@@ -92,10 +94,12 @@ class FighterEdit extends Component {
             type="links"
             title={segment.title}
             links={segment.links}
-            key={index}
+            key={shortid.generate()}
             index={index}
             move={this.handleMove}
             remove={this.handleRemove}
+            edit={segment.edit === true ? true: false }
+            editcb={this.handleEdit}
             />  
         );
 
@@ -106,10 +110,12 @@ class FighterEdit extends Component {
             title={segment.title}
             text={segment.text}
             textAreaOnly={false}
-            key={index}
+            key={shortid.generate()}
             index={index}
             move={this.handleMove}
             remove={this.handleRemove}
+            edit={segment.edit === true ? true: false }
+            editcb={this.handleEdit}
           />
         )
       }
@@ -133,6 +139,7 @@ class FighterEdit extends Component {
             title="Description"
             text={data.description}
             textAreaOnly={true}
+            edit={ false }
           />
 
           <Card.Group centered={true} itemsPerRow={3}>

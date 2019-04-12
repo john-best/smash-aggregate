@@ -19,7 +19,7 @@ class SegmentEditor extends Component {
     super(props);
 
     this.state = {
-      edit: false,
+      edit: this.props.edit,
       type: this.props.type,
       title: this.props.title,
       text: this.props.text,
@@ -30,8 +30,9 @@ class SegmentEditor extends Component {
     this.setState({ [target.name]: target.value });
   };
 
-  toggleEdit = () => {
+  toggleEdit = (event, target) => {
     this.setState({ edit: !this.state.edit });
+    this.props.editcb(this.props.index, !this.state.edit)
   };
 
   handleMove =(event, target) => {
