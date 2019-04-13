@@ -21,6 +21,17 @@ export default function fighterReducer(state = {}, action) {
         error: action.error
       };
 
+    case types.SEGMENT_UPDATE_PARAM:
+      var segments = [...state.fighter_data.segments];
+      segments[action.index] = { ...segments[action.index], [action.name]: action.value }
+
+      var fighter_data = { ...state.fighter_data, segments: segments };
+      return { ...state, fighter_data: fighter_data };
+
+    case types.DESCRIPTION_UPDATE_TEXT:
+      var fighter_data = { ...state.fighter_data, description: action.value };
+      return { ...state, fighter_data: fighter_data };
+    
     default:
       return state;
   }

@@ -2,7 +2,9 @@ import * as types from "./actionTypes";
 import { data } from "../components/tempdata";
 
 export const fighterActions = {
-    loadFighter
+    loadFighter,
+    updateSegmentParam,
+    updateDescription
 }
 
 function loadFighter(fighter) {
@@ -29,4 +31,26 @@ function loadFighter(fighter) {
         return { type: types.FIGHTER_LOAD_FAILURE, isLoading: false, error: error }
     }
 }
+
+function updateSegmentParam(index, name, value) {
+    return dispatch => {
+  
+      dispatch(update(index, name, value))
+
+      function update(index, name, value) {
+        return { type: types.SEGMENT_UPDATE_PARAM, name: name,  index: index, value: value }
+      }
+    }
+}
+
+function updateDescription(value) {
+    return dispatch => {
+        dispatch(update(value))
+
+        function update(value) {
+            return { type: types.DESCRIPTION_UPDATE_TEXT, value: value }
+        }
+    }
+}
+
 

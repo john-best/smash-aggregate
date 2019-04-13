@@ -62,3 +62,6 @@ typings/
 
 # assets don't need to be uploaded to github, probably
 public/fighters_*
+
+# my settings are not for the public to see (tab-size 2 spaces?? insane)
+.vscode

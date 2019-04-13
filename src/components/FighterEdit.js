@@ -8,17 +8,18 @@ import {
   Header,
   Image,
   Button,
-  Loader,
+  Loader
 } from "semantic-ui-react";
 import fighters from "./fighterlist/characters";
-import { SegmentEditor } from "./editor/SegmentEditor";
+import SegmentEditor from "./editor/SegmentEditor";
 import { Matchup } from "./common/Matchup";
-import { FaDiscord, FaUserAstronaut } from "react-icons/fa";
+import { FaDiscord } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import shortid from "shortid";
 import { connect } from "react-redux";
 import { fighterActions } from "../actions/fighterActions";
 import { bindActionCreators } from "redux";
+import DescriptionEditor from "./editor/DescriptionEditor";
 
 class FighterEdit extends Component {
   constructor(props) {
@@ -105,127 +106,132 @@ class FighterEdit extends Component {
     });
     options.unshift({ key: "-1", value: "", text: "Select Fighter" });
 
-    let segments = [];
-    if (this.props.loaded === true) {
-      this.props.fighter_data.segments.forEach((segment, index) => {
-        if (segment.type === "links") {
-          segments.push(
-            <SegmentEditor
-              type="links"
-              title={segment.title}
-              links={segment.links}
-              key={shortid.generate()}
-              index={index}
-              edit={segment.edit === true ? true : false}
-            />
-          );
-        } else {
-          segments.push(
-            <SegmentEditor
-              type="text"
-              title={segment.title}
-              text={segment.text}
-              textAreaOnly={false}
-              key={shortid.generate()}
-              index={index}
-              edit={segment.edit === true ? true : false}
-            />
-          );
-        }
-      });
-    }
-      return (
-        <div>
-          <Navbar active="fighters" />
-          <Container>
-            {this.props.loaded === true ? (
-              <>
-            <Header>
-              <Image avatar src={this.props.fighter_data.icon} />{" "}
-              {this.props.fighter_data.fighter_name}{" "}
-            </Header>
-            <Message
-              header="Work In Progress!"
-              content="This page currently serves as an example of what a fighter page could look like. Nothing is set in stone yet."
-              icon={<Icon name="exclamation" />}
-            />
-
-            <SegmentEditor
-              type="text"
-              title="Description"
-              text={this.props.fighter_data.description}
-              textAreaOnly={true}
-              edit={false}
-            />
-
-            <Card.Group centered={true} itemsPerRow={3}>
-              <Card href={this.props.fighter_data.discord_url}>
-                <Card.Content>
-                  <Card.Header>
-                    <FaDiscord /> Discord
-                  </Card.Header>
-                  <Card.Description>
-                    Click here to join the Smashcord!
-                  </Card.Description>
-                </Card.Content>
-              </Card>
-              <Card
-                header="Frame Data (KH)"
-                href={this.props.fighter_data.kh_url}
-                description={
-                  "Kurogane Hammer's frame data and attributes for " +
-                  this.props.fighter_data.fighter_name +
-                  "."
-                }
+    return (
+      <div>
+        <Navbar active="fighters" />
+        <Container>
+          {this.props.loaded === true ? (
+            <>
+              <Header>
+                <Image avatar src={this.props.fighter_data.icon} />{" "}
+                {this.props.fighter_data.fighter_name}{" "}
+              </Header>
+              <Message
+                header="Work In Progress!"
+                content="This page currently serves as an example of what a fighter page could look like. Nothing is set in stone yet."
+                icon={<Icon name="exclamation" />}
               />
 
-              <Card
-                header="SSBWiki"
-                href={this.props.fighter_data.ssbw_url}
-                description={
-                  "Changes, Patches, etc. for " +
-                  this.props.fighter_data.fighter_name +
-                  "."
-                }
+              <DescriptionEditor
+                title="Description"
+                text={this.props.fighter_data.description}
+                edit={false}
               />
-            </Card.Group>
 
-            <Matchup edit={true} />
+              <Card.Group centered={true} itemsPerRow={3}>
+                <Card href={this.props.fighter_data.discord_url}>
+                  <Card.Content>
+                    <Card.Header>
+                      <FaDiscord /> Discord
+                    </Card.Header>
+                    <Card.Description>
+                      Click here to join the Smashcord!
+                    </Card.Description>
+                  </Card.Content>
+                </Card>
+                <Card
+                  header="Frame Data (KH)"
+                  href={this.props.fighter_data.kh_url}
+                  description={
+                    "Kurogane Hammer's frame data and attributes for " +
+                    this.props.fighter_data.fighter_name +
+                    "."
+                  }
+                />
 
-            {segments}
+                <Card
+                  header="SSBWiki"
+                  href={this.props.fighter_data.ssbw_url}
+                  description={
+                    "Changes, Patches, etc. for " +
+                    this.props.fighter_data.fighter_name +
+                    "."
+                  }
+                />
+              </Card.Group>
 
-            <Button.Group>
-              <Button>Save</Button>
-              <Button.Or />
+              <Matchup edit={true} />
+
+              {this.props.fighter_data.segments.map((segment, index) => {
+                if (segment.type === "links") {
+                  return (
+                    <SegmentEditor
+                      type="links"
+                      title={segment.title}
+                      links={segment.links}
+                      key={shortid.generate()}
+                      index={index}
+                      edit={segment.edit === true}
+                    />
+                  );
+                } else {
+                  return (<SegmentEditor
+                    type="text"
+                    title={segment.title}
+                    text={segment.text} 
+                    textAreaOnly={false}
+                    key={shortid.generate()}
+                    index={index}
+                    edit={segment.edit === true}
+                  />);
+                }
+              })}
+              <Button.Group>
+                <Button>Save</Button>
+                <Button.Or />
+                <Button
+                  as={Link}
+                  to={"/fighters/" + this.props.match.params.fighter}
+                  color="red"
+                >
+                  Cancel
+                </Button>
+              </Button.Group>
+
               <Button
-                as={Link}
-                to={"/fighters/" + this.props.match.params.fighter}
-                color="red"
-              >
-                Cancel
-              </Button>
-            </Button.Group>
-
-            <Button
-              color="green"
-              icon="add"
-              floated="right"
-              onClick={this.handleAdd}
-            /></>) : (<Loader content='Loading...' active />)}
-          </Container>
-        </div>
-      );
+                color="green"
+                icon="add"
+                floated="right"
+                onClick={this.handleAdd}
+              />
+            </>
+          ) : (
+            <Loader content="Loading..." active />
+          )}
+        </Container>
+      </div>
+    );
   }
 }
 
 const mapStateToProps = state => {
-  if (state.fighterReducer.fighter_loading === false && state.fighterReducer.error === false) {
-    document.title = "Smash Aggregate - " + state.fighterReducer.fighter_data.fighter_name + " (edit)";
+  if (
+    state.fighterReducer.fighter_loading === false &&
+    state.fighterReducer.error === false
+  ) {
+    document.title =
+      "Smash Aggregate - " +
+      state.fighterReducer.fighter_data.fighter_name +
+      " (edit)";
   }
-  
+
   return {
     fighter_data: state.fighterReducer.fighter_data,
-    loaded: state.fighterReducer.fighter_loading === false && state.fighterReducer.error === false ? true : false
+    loaded:
+      state.fighterReducer.fighter_loading === false &&
+      state.fighterReducer.error === false
+        ? true
+        : false
   };
 };
 

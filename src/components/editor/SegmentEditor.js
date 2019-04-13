@@ -1,7 +1,10 @@
 import React, { Component } from "react";
-import { TextEditor } from "./TextEditor";
+import TextEditor from "./TextEditor";
 import { LinkEditor } from "./LinkEditor";
 import { Button, Segment, Divider, Form, Header } from "semantic-ui-react";
+import { fighterActions } from "../../actions/fighterActions"
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 let segOptions = [
   { key: "text", value: "text", text: "Text" },
@@ -21,22 +24,18 @@ class SegmentEditor extends Component {
     };
   }
   onChange = (event, target) => {
-    this.setState({ [target.name]: target.value });
+    this.props.actions.updateSegmentParam(this.props.index, target.name, target.value)
   };
 
   toggleEdit = (event, target) => {
-    this.setState({ edit: !this.state.edit });
-  };
-
-  updateText = new_text => {
-    this.setState({text: new_text})
+    this.props.actions.updateSegmentParam(this.props.index, "edit", (this.props.edit === undefined) ? true : !this.props.edit)
   };
 
   render() {
     return (
       <Segment>
         <Form>
-          {this.state.edit ? (
+          {this.props.edit ? (
             <Form.Group>
               <Form.Select
                 disabled={this.props.textAreaOnly}
@@ -44,7 +43,7 @@ class SegmentEditor extends Component {
                 selection
                 options={segOptions}
                 onChange={this.onChange}
-                value={this.state.type}
+                value={this.props.type}
                 name="type"
                 width={2}
                 fluid
@@ -52,28 +51,28 @@ class SegmentEditor extends Component {
               <Form.Input
                 disabled={this.props.textAreaOnly}
                 label="Title"
-                value={this.state.title}
+                value={this.props.title}
                 onChange={this.onChange}
                 name="title"
                 width={14}
               />
             </Form.Group>
           ) : (
-            <Header>{this.state.title}</Header>
+            <Header>{this.props.title}</Header>
           )}
 
           {this.state.type === "links" ? (
             <LinkEditor
               links={this.props.links}
-              deleteThis={() => console.log("delete requested")}
-              edit={this.state.edit}
+              deleteThis={""}
+              edit={this.props.edit}
             />
           ) : (
             <TextEditor
               text={this.props.text}
-              deleteThis={() => console.log("delete requested")}
-              edit={this.state.edit}
-              updateText={this.updateText}
+              deleteThis={""}
+              edit={this.props.edit}
+              index={this.props.index}
             />
           )}
 
@@ -90,7 +89,7 @@ class SegmentEditor extends Component {
                   width={1}
                   icon="delete"
                   color="red"
-                  onClick={this.handleRemove}
+                  onClick={() => {}}  
                 />
               </Button.Group>
               <Button.Group floated="right">
@@ -98,13 +97,14 @@ class SegmentEditor extends Component {
                   width={1}
                   icon="arrow up"
                   direction="up"
-                  onClick={this.handleMove}
+                  onClick={() => {}}  
                 />
                 <Button
                   width={1}
                   icon="arrow down"
                   direction="down"
-                  onClick={this.handleMove}
+                  onClick={() => {}}  
+
                 />
               </Button.Group>
             </span>
@@ -115,4 +115,18 @@ class SegmentEditor extends Component {
   }
 }
 
-export { SegmentEditor };
+const mapStateToProps = state => {
+  return state;
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    actions: bindActionCreators(fighterActions, dispatch)
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SegmentEditor);
+

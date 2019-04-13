@@ -3,6 +3,9 @@ import { Form, Label } from "semantic-ui-react";
 
 import TextareaAutosize from "react-textarea-autosize";
 import ReactMarkdown from "react-markdown";
+import { fighterActions } from "../../actions/fighterActions"
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 class TextEditor extends Component {
   constructor(props) {
@@ -13,9 +16,8 @@ class TextEditor extends Component {
     };
   }
 
-  updateText = event => {
-    this.setState({ text: event.target.value });
-    this.props.updateText(event.target.value);
+  editText = event => {
+    this.props.actions.updateSegmentParam(this.props.index, event.target.name, event.target.value)
   };
 
   render() {
@@ -28,7 +30,7 @@ class TextEditor extends Component {
             label={<Label ribbon>Description</Label>}
             placeholder="You can use Markdown here (most of it, anyways)"
             value={this.state.text}
-            onChange={this.updateText}
+            onChange={this.editText}
             name="text"
           />
         ) : (
@@ -39,4 +41,17 @@ class TextEditor extends Component {
   }
 }
 
-export { TextEditor };
+const mapStateToProps = state => {
+  return state;
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    actions: bindActionCreators(fighterActions, dispatch)
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TextEditor);
