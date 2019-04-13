@@ -2,9 +2,9 @@ import React from "react";
 import { Route, Switch } from "react-router";
 
 import { Home } from "./components/Home";
-import { Fighter } from "./components/Fighter";
+import Fighter from "./components/Fighter";
 import { FighterList } from "./components/FighterList";
-import { FighterEdit } from "./components/FighterEdit";
+import FighterEdit from "./components/FighterEdit";
 
 
 export default (

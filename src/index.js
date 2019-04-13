@@ -4,16 +4,19 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import "semantic-ui-css/semantic.min.css";
 
-// soon
-//import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import { ConnectedRouter } from 'connected-react-router';
+import configureStore, { history } from "./configureStore";
 
 import routes from "./routes";
+const store = configureStore();
 
 // i feel like we can combile routes.js and index.js but i'm not too sure.
 ReactDOM.render(
-  <BrowserRouter>
+    <Provider store={store}>
+  <ConnectedRouter history={history}>
     <App routes={routes} />
-  </BrowserRouter>,
+  </ConnectedRouter>
+  </Provider>,
   document.getElementById("root")
 );
