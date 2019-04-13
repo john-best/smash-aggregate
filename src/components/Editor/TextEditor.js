@@ -29,7 +29,7 @@ class TextEditor extends Component {
             useCacheForDOMMeasurements
             label={<Label ribbon>Description</Label>}
             placeholder="You can use Markdown here (most of it, anyways)"
-            value={this.state.text}
+            value={this.props.text}
             onChange={this.editText}
             name="text"
           />
@@ -41,8 +41,10 @@ class TextEditor extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return state;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    text: state.fighterReducer.fighter_data.segments[ownProps.index].text
+  }
 };
 
 const mapDispatchToProps = dispatch => {

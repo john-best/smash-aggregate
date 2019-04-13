@@ -14,21 +14,13 @@ let segOptions = [
 class SegmentEditor extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      edit: this.props.edit,
-      type: this.props.type,
-      title: this.props.title,
-      text: this.props.text,
-      links: this.props.links
-    };
   }
   onChange = (event, target) => {
     this.props.actions.updateSegmentParam(this.props.index, target.name, target.value)
   };
 
   toggleEdit = (event, target) => {
-    this.props.actions.updateSegmentParam(this.props.index, "edit", (this.props.edit === undefined) ? true : !this.props.edit)
+    this.props.actions.updateSegmentParam(this.props.index, "edit", (this.props.segment.edit === undefined) ? true : !this.props.segment.edit)
   };
 
   render() {
@@ -51,38 +43,35 @@ class SegmentEditor extends Component {
               <Form.Input
                 disabled={this.props.textAreaOnly}
                 label="Title"
-                value={this.props.title}
+                value={this.props.segment.title}
                 onChange={this.onChange}
                 name="title"
                 width={14}
               />
             </Form.Group>
           ) : (
-            <Header>{this.props.title}</Header>
+            <Header>{this.props.segment.title}</Header>
           )}
 
-          {this.state.type === "links" ? (
+          {this.props.segment.type === "links" ? (
             <LinkEditor
-              links={this.props.links}
-              deleteThis={""}
-              edit={this.props.edit}
+              links={this.props.segment.links}
+              edit={this.props.segment.edit}
             />
           ) : (
             <TextEditor
-              text={this.props.text}
-              deleteThis={""}
-              edit={this.props.edit}
+              edit={this.props.segment.edit}
               index={this.props.index}
             />
           )}
 
           <Divider />
-          {this.state.edit ? (
+          {this.props.segment.edit ? (
             <Button onClick={this.toggleEdit}>Preview</Button>
           ) : (
             <Button onClick={this.toggleEdit}>Edit</Button>
           )}
-          {this.state.edit && !this.props.textAreaOnly ? (
+          {this.props.segment.edit ? (
             <span>
               <Button.Group floated="right">
                 <Button
@@ -115,8 +104,11 @@ class SegmentEditor extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return state;
+const mapStateToProps = (state, ownProps) => {
+  console.log(state.fighterReducer.fighter_data.segments[ownProps.index])
+  return {
+    segment: state.fighterReducer.fighter_data.segments[ownProps.index]
+  };
 };
 
 const mapDispatchToProps = dispatch => {

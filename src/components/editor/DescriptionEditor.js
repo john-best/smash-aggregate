@@ -11,10 +11,8 @@ class DescriptionEditor extends Component {
   constructor(props) {
     super(props);
 
-    // normally we'd store the edit state into the global store, but in this case, we don't have to because description shouldn't ever rerender unless the description changes
     this.state = {
-      edit: this.props.edit,
-      text: this.props.text
+      edit: false
     };
   }
   onChange = (event, target) => {
@@ -29,8 +27,7 @@ class DescriptionEditor extends Component {
     return (
       <Segment>
         <Form>
-          <Header>{this.props.title}</Header>
-
+          <Header>Description</Header>
           {this.state.edit ? (
             <Form.Field
               control={TextareaAutosize}
@@ -58,7 +55,9 @@ class DescriptionEditor extends Component {
 }
 
 const mapStateToProps = state => {
-  return state;
+  return {
+    text: state.fighterReducer.fighter_data.description
+  }
 };
 
 const mapDispatchToProps = dispatch => {

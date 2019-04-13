@@ -21,7 +21,11 @@ import { fighterActions } from "../actions/fighterActions";
 import { bindActionCreators } from "redux";
 import DescriptionEditor from "./editor/DescriptionEditor";
 
+const whyDidYouRender = require('@welldone-software/why-did-you-render');
+whyDidYouRender(React);
+
 class FighterEdit extends Component {
+  static whyDidYouRender = true
   constructor(props) {
     super(props);
 
@@ -36,65 +40,10 @@ class FighterEdit extends Component {
   componentDidMount() {
     this.props.actions.loadFighter(this.props.match.params.fighter);
   }
-  /*
-  handleMove = (segment_index, direction) => {
-    if (segment_index === 0 && direction === "up") {
-      console.log("user tried to move top most segment upwards!");
-      return;
-    }
-
-    if (
-      segment_index === this.state.data.segments.length - 1 &&
-      direction === "down"
-    ) {
-      console.log("user tried to move bottom most segment downwards!");
-      return;
-    }
-
-    let new_segments = [...this.state.data.segments];
-    new_segments.splice(
-      direction === "up" ? segment_index - 1 : segment_index + 1,
-      0,
-      new_segments.splice(segment_index, 1)[0]
-    );
-    this.setState({ data: { ...this.state.data, segments: new_segments } });
-    console.log(new_segments);
-  };
-
-  handleAdd = () => {
-    let new_segments = [...this.state.data.segments];
-    new_segments.push({ type: "text", title: "", text: "", edit: true });
-    this.setState({ data: { ...this.state.data, segments: new_segments } });
-  };
-
-  handleRemove = segment_index => {
-    console.log("removing " + segment_index);
-    let new_segments = [...this.state.data.segments];
-    console.log(new_segments.splice(segment_index, 1));
-    this.setState({ data: { ...this.state.data, segments: new_segments } });
-  };
-
-  handleEdit = (segment_index, isEdit) => {
-    let new_segments = [...this.state.data.segments];
-    new_segments[segment_index].edit = isEdit;
-
-    console.log(new_segments);
-    this.setState({ data: { ...this.state.data, segments: new_segments } });
-  };
-
-  handleUpdateText = (segment_index, new_text) => {
-    let new_segments = [...this.state.data.segments];
-    new_segments[segment_index].text = new_text;
-    this.setState({ data: { ...this.state.data, segments: new_segments } });
-  };
-  */
 
   // TODO: load from database, but we don't actually have a databse yet lmao
   // for now, just generate how the webpage SHOULD look like!
-  // actual todo: convert the data in these into actual data so we can smoothly transition once we start pulling from
-
-  // might need to split some stuff up to make it easier since Fighter is just going to be the bulk of this webapp
-  // splitting means more states and more callbacks ugh
+  
   render() {
     let options = fighters.map(fighter => {
       return {
@@ -122,11 +71,7 @@ class FighterEdit extends Component {
                 icon={<Icon name="exclamation" />}
               />
 
-              <DescriptionEditor
-                title="Description"
-                text={this.props.fighter_data.description}
-                edit={false}
-              />
+              <DescriptionEditor />
 
               <Card.Group centered={true} itemsPerRow={3}>
                 <Card href={this.props.fighter_data.discord_url}>
@@ -162,30 +107,12 @@ class FighterEdit extends Component {
 
               <Matchup edit={true} />
 
-              {this.props.fighter_data.segments.map((segment, index) => {
-                if (segment.type === "links") {
-                  return (
-                    <SegmentEditor
-                      type="links"
-                      title={segment.title}
-                      links={segment.links}
-                      key={shortid.generate()}
-                      index={index}
-                      edit={segment.edit === true}
-                    />
-                  );
-                } else {
-                  return (<SegmentEditor
-                    type="text"
-                    title={segment.title}
-                    text={segment.text} 
-                    textAreaOnly={false}
-                    key={shortid.generate()}
-                    index={index}
-                    edit={segment.edit === true}
-                  />);
-                }
-              })}
+              {this.props.fighter_data.segments.map((segment, index) => (
+                  <SegmentEditor
+                key={segment.id}
+                index={index}
+              />
+              ))}
               <Button.Group>
                 <Button>Save</Button>
                 <Button.Or />

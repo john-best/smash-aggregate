@@ -12,18 +12,20 @@ export var data = {
   
     segments: [
       {
+        id: 1,
         type: "links",
         title: "link title",
         links: [
-          { title: "Flip Kick Mechanics - Orio", url: "#", type: "youtube" },
-          { title: "epic combo video", url: "#", type: "twitter" },
+          { id: 1, title: "Flip Kick Mechanics - Orio", url: "#", type: "youtube" },
+          { id: 2, title: "epic combo video", url: "#", type: "twitter" },
           {
+            id: 3,
             title: "link to reddit post on why game is good",
             url: "#",
             type: "linkify"
           }
         ]
       },
-      { type: "text", title: "text title", text: "hello world" }
+      { id: 2, type: "text", title: "text title", text: "hello world" }
     ]
   };

@@ -75,7 +75,7 @@ class LinkEditor extends Component {
           <List divided relaxed selection>
             {this.state.links.map((link, index) => (
               <List.Item
-                key={shortid.generate()}
+                key={link.id}
                 icon={link.type}
                 content={<a href={link.url}>{link.title}</a>}
               />
