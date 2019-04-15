@@ -8,7 +8,7 @@ let formOptions = [
   { key: "linkify", value: "linkify", text: "Other" }
 ];
 
-class LinkEditor extends Component {
+class LinkEditor extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

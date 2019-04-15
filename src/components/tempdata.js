@@ -29,5 +29,5 @@ export var data = {
       { id: 2, type: "text", title: "text title", text: "hello world" }
     ],
 
-    segments_ids: [1, 2]
+    segment_ids: [1, 2]
   };

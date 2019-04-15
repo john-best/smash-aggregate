@@ -11,7 +11,6 @@ import {
   Loader
 } from "semantic-ui-react";
 import fighters from "./fighterlist/characters";
-import SegmentEditor from "./editor/SegmentEditor";
 import { Matchup } from "./common/Matchup";
 import { FaDiscord } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -20,7 +19,7 @@ import { connect } from "react-redux";
 import { fighterActions } from "../actions/fighterActions";
 import { bindActionCreators } from "redux";
 import DescriptionEditor from "./editor/DescriptionEditor";
-import { stat } from "fs";
+import SegmentManager from "./editor/SegmentManager";
 
 class FighterEdit extends Component {
   constructor(props) {
@@ -104,7 +103,7 @@ class FighterEdit extends Component {
 
               <Matchup edit={true} />
 
-              <SegmentEditor />
+              <SegmentManager />
               <Button.Group>
                 <Button>Save</Button>
                 <Button.Or />
