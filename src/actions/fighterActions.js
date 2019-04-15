@@ -15,8 +15,6 @@ function loadFighter(fighter) {
 
         // do loading here
         dispatch(success(data))
-        console.log(data)
-        //return {data: data}
     };
 
     function request() {

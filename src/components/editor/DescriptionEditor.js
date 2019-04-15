@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Button, Segment, Divider, Form, Header, Label } from "semantic-ui-react";
 import { fighterActions } from "../../actions/fighterActions";
 import { connect } from "react-redux";
@@ -7,7 +7,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import ReactMarkdown from "react-markdown";
 
 // because segments can be added and modified, the description should be standalone.
-class DescriptionEditor extends Component {
+class DescriptionEditor extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -56,7 +56,7 @@ class DescriptionEditor extends Component {
 
 const mapStateToProps = state => {
   return {
-    text: state.fighterReducer.fighter_data.description
+    text: state.fighterReducer.description
   }
 };
 

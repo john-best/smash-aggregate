@@ -6,32 +6,30 @@ export default function fighterReducer(state = {}, action) {
       return {
         ...state,
         fighter_loading: true,
-        fighter_data: null,
+        fighter_loaded: false,
         error: false
       };
 
     case types.FIGHTER_LOAD_SUCCESS:
-      return { ...state, fighter_loading: false, fighter_data: action.data };
+      var data = action.data
+      return { ...state, fighter_loading: false, fighter_loaded: true, ...data };
 
     case types.FIGHTER_LOAD_FAILURE:
       return {
         ...state,
         fighter_loading: false,
-        fighter_data: null,
+        fighter_loaded: false,
         error: action.error
       };
 
     case types.SEGMENT_UPDATE_PARAM:
-      var segments = [...state.fighter_data.segments];
+      var segments = [...state.segments];
       segments[action.index] = { ...segments[action.index], [action.name]: action.value }
-
-      var fighter_data = { ...state.fighter_data, segments: segments };
-      return { ...state, fighter_data: fighter_data };
+      return { ...state, segments};
 
     case types.DESCRIPTION_UPDATE_TEXT:
-      var fighter_data = { ...state.fighter_data, description: action.value };
-      return { ...state, fighter_data: fighter_data };
-    
+      return { ...state, description: action.value};
+
     default:
       return state;
   }

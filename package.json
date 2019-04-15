@@ -5,6 +5,7 @@
   "dependencies": {
     "@welldone-software/why-did-you-render": "^3.0.3",
     "connected-react-router": "^6.3.2",
+    "immer": "^2.1.5",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.11",
     "react": "^16.8.6",

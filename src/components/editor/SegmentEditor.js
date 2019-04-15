@@ -11,67 +11,73 @@ let segOptions = [
   { key: "links", value: "links", text: "Links" }
 ];
 
+
+const whyDidYouRender = require('@welldone-software/why-did-you-render');
+whyDidYouRender(React);
+
 class SegmentEditor extends Component {
+  static whyDidYouRender = true
   constructor(props) {
     super(props);
   }
+
   onChange = (event, target) => {
     this.props.actions.updateSegmentParam(this.props.index, target.name, target.value)
   };
 
   toggleEdit = (event, target) => {
-    this.props.actions.updateSegmentParam(this.props.index, "edit", (this.props.segment.edit === undefined) ? true : !this.props.segment.edit)
+    console.log(target)
+    this.props.actions.updateSegmentParam(target.segment_index, "edit", (this.props.segments[target.segment_index].edit === undefined) ? true : !this.props.segments[target.segment_index].edit)
   };
 
   render() {
     return (
-      <Segment>
+      <>
+        {this.props.segments.map((segment, index) => (<Segment key={segment.id}>
         <Form>
-          {this.props.edit ? (
+          {segment.edit ? (
             <Form.Group>
               <Form.Select
-                disabled={this.props.textAreaOnly}
                 label="Type"
                 selection
                 options={segOptions}
                 onChange={this.onChange}
-                value={this.props.type}
+                value={segment.type}
                 name="type"
                 width={2}
                 fluid
               />
               <Form.Input
-                disabled={this.props.textAreaOnly}
                 label="Title"
-                value={this.props.segment.title}
+                value={segment.title}
                 onChange={this.onChange}
                 name="title"
                 width={14}
               />
             </Form.Group>
           ) : (
-            <Header>{this.props.segment.title}</Header>
+            <Header>{segment.title}</Header>
           )}
 
-          {this.props.segment.type === "links" ? (
+          {segment.type === "links" ? (
             <LinkEditor
-              links={this.props.segment.links}
-              edit={this.props.segment.edit}
+              links={segment.links}
+              edit={segment.edit}
             />
           ) : (
             <TextEditor
-              edit={this.props.segment.edit}
-              index={this.props.index}
+              edit={segment.edit}
+              index={index}
             />
           )}
 
           <Divider />
-          {this.props.segment.edit ? (
-            <Button onClick={this.toggleEdit}>Preview</Button>
+          {segment.edit ? (
+            <Button segment_index={index} onClick={this.toggleEdit}>Preview</Button>
           ) : (
-            <Button onClick={this.toggleEdit}>Edit</Button>
+            <Button segment_index={index} onClick={this.toggleEdit}>Edit</Button>
           )}
-          {this.props.segment.edit ? (
+          {segment.edit ? (
             <span>
               <Button.Group floated="right">
                 <Button
@@ -99,15 +105,17 @@ class SegmentEditor extends Component {
             </span>
           ) : null}
         </Form>
-      </Segment>
+      </Segment>))}
+
+      </>
+      
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(state.fighterReducer.fighter_data.segments[ownProps.index])
   return {
-    segment: state.fighterReducer.fighter_data.segments[ownProps.index]
+    segments: state.fighterReducer.segments
   };
 };
 

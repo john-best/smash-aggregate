@@ -20,12 +20,9 @@ import { connect } from "react-redux";
 import { fighterActions } from "../actions/fighterActions";
 import { bindActionCreators } from "redux";
 import DescriptionEditor from "./editor/DescriptionEditor";
-
-const whyDidYouRender = require('@welldone-software/why-did-you-render');
-whyDidYouRender(React);
+import { stat } from "fs";
 
 class FighterEdit extends Component {
-  static whyDidYouRender = true
   constructor(props) {
     super(props);
 
@@ -43,7 +40,7 @@ class FighterEdit extends Component {
 
   // TODO: load from database, but we don't actually have a databse yet lmao
   // for now, just generate how the webpage SHOULD look like!
-  
+
   render() {
     let options = fighters.map(fighter => {
       return {
@@ -62,8 +59,8 @@ class FighterEdit extends Component {
           {this.props.loaded === true ? (
             <>
               <Header>
-                <Image avatar src={this.props.fighter_data.icon} />{" "}
-                {this.props.fighter_data.fighter_name}{" "}
+                <Image avatar src={this.props.icon} />{" "}
+                {this.props.fighter_name}{" "}
               </Header>
               <Message
                 header="Work In Progress!"
@@ -74,7 +71,7 @@ class FighterEdit extends Component {
               <DescriptionEditor />
 
               <Card.Group centered={true} itemsPerRow={3}>
-                <Card href={this.props.fighter_data.discord_url}>
+                <Card href={this.props.discord_url}>
                   <Card.Content>
                     <Card.Header>
                       <FaDiscord /> Discord
@@ -86,20 +83,20 @@ class FighterEdit extends Component {
                 </Card>
                 <Card
                   header="Frame Data (KH)"
-                  href={this.props.fighter_data.kh_url}
+                  href={this.props.kh_url}
                   description={
                     "Kurogane Hammer's frame data and attributes for " +
-                    this.props.fighter_data.fighter_name +
+                    this.props.fighter_name +
                     "."
                   }
                 />
 
                 <Card
                   header="SSBWiki"
-                  href={this.props.fighter_data.ssbw_url}
+                  href={this.props.ssbw_url}
                   description={
                     "Changes, Patches, etc. for " +
-                    this.props.fighter_data.fighter_name +
+                    this.props.fighter_name +
                     "."
                   }
                 />
@@ -107,12 +104,7 @@ class FighterEdit extends Component {
 
               <Matchup edit={true} />
 
-              {this.props.fighter_data.segments.map((segment, index) => (
-                  <SegmentEditor
-                key={segment.id}
-                index={index}
-              />
-              ))}
+              <SegmentEditor />
               <Button.Group>
                 <Button>Save</Button>
                 <Button.Or />
@@ -143,23 +135,24 @@ class FighterEdit extends Component {
 
 const mapStateToProps = state => {
   if (
-    state.fighterReducer.fighter_loading === false &&
-    state.fighterReducer.error === false
+    state.fighterReducer.fighter_loaded === true
   ) {
     document.title =
       "Smash Aggregate - " +
-      state.fighterReducer.fighter_data.fighter_name +
+      state.fighterReducer.fighter_name +
       " (edit)";
+      return {
+        discord_url: state.fighterReducer.discord_url,
+        fighter_name: state.fighterReducer.fighter_name,
+        fighter_url: state.fighterReducer.fighter_url,
+        icon: state.fighterReducer.icon,
+        kh_url: state.fighterReducer.kh_url,
+        ssbw_url: state.fighterReducer.ssbw_url,
+        loaded: true
+      };
   }
-
-  return {
-    fighter_data: state.fighterReducer.fighter_data,
-    loaded:
-      state.fighterReducer.fighter_loading === false &&
-      state.fighterReducer.error === false
-        ? true
-        : false
-  };
+  
+  return {loaded: false}
 };
 
 const mapDispatchToProps = dispatch => {
@@ -168,7 +161,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
+const connectedFighterEdit = connect(
   mapStateToProps,
   mapDispatchToProps
 )(FighterEdit);
+
+export { connectedFighterEdit as FighterEdit }

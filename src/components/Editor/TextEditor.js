@@ -16,6 +16,13 @@ class TextEditor extends Component {
     };
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (this.props.text !== nextProps.text) return true;
+    if (this.props.text !== nextProps.index) return true;
+    if (this.props.edit !== nextProps.edit) return true;
+    return false
+  }
+
   editText = event => {
     this.props.actions.updateSegmentParam(this.props.index, event.target.name, event.target.value)
   };
@@ -43,7 +50,7 @@ class TextEditor extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    text: state.fighterReducer.fighter_data.segments[ownProps.index].text
+    text: state.fighterReducer.segments[ownProps.index].text
   }
 };
 
