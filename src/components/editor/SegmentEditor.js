@@ -29,7 +29,7 @@ class SegmentEditor extends Component {
 
   onChange = (event, target) => {
     this.props.actions.updateSegmentParam(
-      this.props.index,
+      this.props.id,
       target.name,
       target.value
     );
@@ -37,7 +37,7 @@ class SegmentEditor extends Component {
 
   toggleEdit = (event, target) => {
     this.props.actions.updateSegmentParam(
-      this.props.index,
+      this.props.id,
       "edit",
       this.props.segment.edit === undefined ? true : !this.props.segment.edit
     );
@@ -45,11 +45,15 @@ class SegmentEditor extends Component {
 
   editText = event => {
     this.props.actions.updateSegmentParam(
-      this.props.index,
+      this.props.id,
       event.target.name,
       event.target.value
     );
   };
+
+  handleDelete = () => {
+      this.props.actions.deleteSegment(this.props.id);
+  }
 
   render() {
     let editor = null;
@@ -59,7 +63,14 @@ class SegmentEditor extends Component {
 
       let link_ids;
       if (this.props.segment.link_ids === undefined) {
-        link_ids = [-1];
+        this.props.actions.addSegmentLink(this.props.id);
+        link_ids = [];
+
+        // i shouldn't be doing this, but it works for now...
+        // so i need to come back to this and figure out how to do this without forcing a rerender
+        this.forceUpdate()
+
+    
       } else {
         link_ids = [...this.props.segment.link_ids];
       }
@@ -69,8 +80,8 @@ class SegmentEditor extends Component {
           <>
             {link_ids.map((id, index) => (
               <LinkEditor
-                id={id}
-                segment_index={this.props.index}
+                link_id={id}
+                segment_id={this.props.id}
                 index={index}
                 key={id}
               />
@@ -83,8 +94,8 @@ class SegmentEditor extends Component {
             {link_ids.map((id, index) => {
               return (
                 <LinkEditor
-                  id={id}
-                  segment_index={this.props.index}
+                  link_id={id}
+                  segment_id={this.props.id}
                   index={index}
                   key={id}
                 />
@@ -152,7 +163,7 @@ class SegmentEditor extends Component {
         {this.props.segment.edit ? (
           <span>
             <Button.Group floated="right">
-              <Button width={1} icon="delete" color="red" onClick={() => {}} />
+              <Button width={1} icon="delete" color="red" onClick={this.handleDelete} />
             </Button.Group>
             <Button.Group floated="right">
               <Button
@@ -177,7 +188,7 @@ class SegmentEditor extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    segment: state.fighterReducer.segments[ownProps.index]
+    segment: state.fighterReducer.segments[ownProps.id]
   };
 };
 

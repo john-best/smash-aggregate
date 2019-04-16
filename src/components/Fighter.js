@@ -19,6 +19,7 @@ import { Matchup } from "./common/Matchup";
 import { fighterActions } from "../actions/fighterActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import ReactMarkdown from "react-markdown";
 
 class Fighter extends Component {
   constructor(props) {
@@ -37,36 +38,29 @@ class Fighter extends Component {
   render() {
     let segments = [];
     if (this.props.loaded === true) {
-      this.props.fighter_data.segments.forEach((segment, index) => {
-        if (segment.type === "links")
-          segments.push(
-            <Segment key={index}>
-              <Header>{segment.title}</Header>
-              <List divided relaxed selection>
-                {segment.links.map((link, index) => (
-                  <List.Item
-                    key={index}
-                    icon={link.type}
-                    content={<a href={link.url}>{link.title}</a>}
-                  />
-                ))}
-              </List>
+      segments = this.props.segment_ids.map((id) => {
+        if (this.props.segments[id].type === "text") {
+          return (
+          <Segment key={id}>
+          <Header> {this.props.segments[id].title} </Header>
+          <ReactMarkdown source={this.props.segments[id].text} />
+          </Segment>)
+        } else if (this.props.segments[id].type === "links") {
+          return (
+            <Segment key={id}>
+            <Header> {this.props.segments[id].title} </Header>
+            <List divided relaxed selection>
+            {this.props.segments[id].link_ids.map(link_id => {
+              var link = this.props.segments[id].links[link_id]
+              return <List.Item key={link_id} icon={link.type} content={<a href={link.url}>{link.title}</a>}/>
+            }
+            )}
+            </List>
             </Segment>
-          );
-        else {
-          console.log(segment);
-          segments.push(
-            <Segment key={index}>
-              <Header> {segment.title} </Header>
-              <List divided relaxed selection>
-                <p>{segment.text}</p>
-              </List>
-            </Segment>
-          );
+          )
         }
-      });
+      })
     }
-
     return (
       <div>
         <Navbar active="fighters" />
@@ -74,8 +68,7 @@ class Fighter extends Component {
           {this.props.loaded === true ? (
             <>
               <Header>
-                <Image avatar src={this.props.fighter_data.icon} />{" "}
-                {this.props.fighter_data.fighter_name}{" "}
+                <Image avatar src={this.props.icon} /> {this.props.fighter_name}{" "}
                 <Button
                   as={Link}
                   to={this.props.match.url + "/edit"}
@@ -92,11 +85,11 @@ class Fighter extends Component {
 
               <Segment>
                 <Header> Description </Header>
-                {this.props.fighter_data.description}
+                {this.props.description}
               </Segment>
 
               <Card.Group centered={true} itemsPerRow={3}>
-                <Card href={this.props.fighter_data.discord_url}>
+                <Card href={this.props.discord_url}>
                   <Card.Content>
                     <Card.Header>
                       <FaDiscord /> Discord
@@ -108,20 +101,20 @@ class Fighter extends Component {
                 </Card>
                 <Card
                   header="Frame Data (KH)"
-                  href={this.props.fighter_data.kh_url}
+                  href={this.props.kh_url}
                   description={
                     "Kurogane Hammer's frame data and attributes for " +
-                    this.props.fighter_data.fighter_name +
+                    this.props.fighter_name +
                     "."
                   }
                 />
 
                 <Card
                   header="SSBWiki"
-                  href={this.props.fighter_data.ssbw_url}
+                  href={this.props.ssbw_url}
                   description={
                     "Changes, Patches, etc. for " +
-                    this.props.fighter_data.fighter_name +
+                    this.props.fighter_name +
                     "."
                   }
                 />
@@ -141,22 +134,23 @@ class Fighter extends Component {
 }
 
 const mapStateToProps = state => {
-  if (
-    state.fighterReducer.fighter_loading === false &&
-    state.fighterReducer.error === false
-  ) {
+  if (state.fighterReducer.fighter_loaded === true) {
     document.title =
-      "Smash Aggregate - " + state.fighterReducer.fighter_data.fighter_name;
+      "Smash Aggregate - " + state.fighterReducer.fighter_name + " (edit)";
+    return {
+      discord_url: state.fighterReducer.discord_url,
+      fighter_name: state.fighterReducer.fighter_name,
+      fighter_url: state.fighterReducer.fighter_url,
+      icon: state.fighterReducer.icon,
+      kh_url: state.fighterReducer.kh_url,
+      ssbw_url: state.fighterReducer.ssbw_url,
+      segments: state.fighterReducer.segments,
+      segment_ids: state.fighterReducer.segment_ids,
+      loaded: true
+    };
+  } else {
+    return { loaded: false };
   }
-
-  return {
-    fighter_data: state.fighterReducer.fighter_data,
-    loaded:
-      state.fighterReducer.fighter_loading === false &&
-      state.fighterReducer.error === false
-        ? true
-        : false
-  };
 };
 
 const mapDispatchToProps = dispatch => {

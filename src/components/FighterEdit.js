@@ -37,6 +37,10 @@ class FighterEdit extends Component {
     this.props.actions.loadFighter(this.props.match.params.fighter);
   }
 
+  handleAdd = () => {
+    this.props.actions.addSegment()
+  }
+
   // TODO: load from database, but we don't actually have a databse yet lmao
   // for now, just generate how the webpage SHOULD look like!
 

@@ -17,7 +17,12 @@ class LinkEditor extends React.PureComponent {
   }
 
   onChange = (event, target) => {
-    this.props.actions.updateSegmentLinkParam(this.props.segment_index, this.props.index, target.name, target.value)
+    this.props.actions.updateSegmentLinkParam(
+      this.props.segment_id,
+      this.props.link_id,
+      target.name,
+      target.value
+    );
   };
 
   render() {
@@ -75,21 +80,11 @@ class LinkEditor extends React.PureComponent {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let link =
-    ownProps.id === -1
-      ? {
-          id: shortid.generate(),
-          title: "",
-          url: "",
-          type: "linkify"
-        }
-      : state.fighterReducer.segments[ownProps.segment_index].links[
-          ownProps.index
-        ];
+  let link = state.fighterReducer.segments[ownProps.segment_id].links[ownProps.link_id];
 
   return {
     link: link,
-    edit: state.fighterReducer.segments[ownProps.segment_index].edit
+    edit: state.fighterReducer.segments[ownProps.segment_id].edit
   };
 };
 
