@@ -24,7 +24,8 @@ export var data = {
             url: "#",
             type: "linkify"
           }
-        ]
+        ],
+        link_ids: [1,2,3]
       },
       { id: 2, type: "text", title: "text title", text: "hello world" }
     ],

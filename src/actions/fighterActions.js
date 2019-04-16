@@ -4,7 +4,8 @@ import { data } from "../components/tempdata";
 export const fighterActions = {
     loadFighter,
     updateSegmentParam,
-    updateDescription
+    updateDescription,
+    updateSegmentLinkParam
 }
 
 function loadFighter(fighter) {
@@ -37,6 +38,17 @@ function updateSegmentParam(index, name, value) {
 
       function update(index, name, value) {
         return { type: types.SEGMENT_UPDATE_PARAM, name: name,  index: index, value: value }
+      }
+    }
+}
+
+function updateSegmentLinkParam(segment_index, index, name, value) {
+    return dispatch => {
+  
+      dispatch(update(segment_index, index, name, value))
+
+      function update(segment_index, index, name, value) {
+        return { type: types.SEGMENT_LINK_UPDATE_PARAM, segment_index: segment_index, name: name,  index: index, value: value }
       }
     }
 }

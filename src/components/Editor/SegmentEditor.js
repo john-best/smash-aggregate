@@ -5,7 +5,8 @@ import {
   Divider,
   Form,
   Header,
-  Label
+  Label,
+  List
 } from "semantic-ui-react";
 import { fighterActions } from "../../actions/fighterActions";
 import { connect } from "react-redux";
@@ -13,6 +14,8 @@ import { bindActionCreators } from "redux";
 
 import TextareaAutosize from "react-textarea-autosize";
 import ReactMarkdown from "react-markdown";
+
+import LinkEditor from "./LinkEditor";
 
 let segOptions = [
   { key: "text", value: "text", text: "Text" },
@@ -33,18 +36,65 @@ class SegmentEditor extends Component {
   };
 
   toggleEdit = (event, target) => {
-    this.props.actions.updateSegmentParam(this.props.index, "edit", (this.props.segment.edit === undefined) ? true : !this.props.segment.edit)
+    this.props.actions.updateSegmentParam(
+      this.props.index,
+      "edit",
+      this.props.segment.edit === undefined ? true : !this.props.segment.edit
+    );
   };
 
-  editText = (event) => {
-    this.props.actions.updateSegmentParam(this.props.index, event.target.name, event.target.value)
-  }
+  editText = event => {
+    this.props.actions.updateSegmentParam(
+      this.props.index,
+      event.target.name,
+      event.target.value
+    );
+  };
 
   render() {
     let editor = null;
 
     if (this.props.segment.type === "links") {
-      editor = null;
+      let links = null;
+
+      let link_ids;
+      if (this.props.segment.link_ids === undefined) {
+        link_ids = [-1];
+      } else {
+        link_ids = [...this.props.segment.link_ids];
+      }
+
+      if (this.props.segment.edit) {
+        links = (
+          <>
+            {link_ids.map((id, index) => (
+              <LinkEditor
+                id={id}
+                segment_index={this.props.index}
+                index={index}
+                key={id}
+              />
+            ))}
+          </>
+        );
+      } else {
+        links = (
+          <List divided relaxed selection>
+            {link_ids.map((id, index) => {
+              return (
+                <LinkEditor
+                  id={id}
+                  segment_index={this.props.index}
+                  index={index}
+                  key={id}
+                />
+              );
+            })}
+          </List>
+        );
+      }
+
+      editor = <>{links}</>;
     } else if (this.props.segment.type === "text") {
       editor = this.props.segment.edit ? (
         <Form.Field
@@ -90,17 +140,13 @@ class SegmentEditor extends Component {
             <Header>{this.props.segment.title}</Header>
           )}
 
-        {editor}
+          {editor}
         </Form>
         <Divider />
         {this.props.segment.edit ? (
-          <Button onClick={this.toggleEdit}>
-            Preview
-          </Button>
+          <Button onClick={this.toggleEdit}>Preview</Button>
         ) : (
-          <Button onClick={this.toggleEdit}>
-            Edit
-          </Button>
+          <Button onClick={this.toggleEdit}>Edit</Button>
         )}
 
         {this.props.segment.edit ? (
