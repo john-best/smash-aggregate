@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { Dropdown, Segment, Header } from "semantic-ui-react";
+import { Form, Segment, Header } from "semantic-ui-react";
 import fighters from "../fighterlist/characters";
+import { connect } from "react-redux";
+import ReactMarkdown from "react-markdown";
 
 function translate(fighter) {
   return {
@@ -18,32 +20,26 @@ class Matchup extends Component {
     super(props);
 
     this.state = {
-      matchup_text: "",
-      opponent: ""
+      currentMatchup: -1
     };
   }
 
-  // when we incorporate the db, this will need to be changed a bit
+
   handleChangeMatchup = (event, target) => {
-    if (target.value !== -1) {
-      this.setState({
-        opponent: target.value,
-        matchup_text:
-          "it's bayonetta's son so good luck"
-      });
-    } else {
-        this.setState({
-            opponent: target.value,
-            matchup_text: ""
-        })
-    }
+    this.setState({ currentMatchup: target.value });
   };
 
   render() {
+
+    let text = this.props.matchups[this.state.currentMatchup];
+    if (this.state.currentMatchup !== -1 && (text === undefined || text === "")) {
+      text = "No info available."
+    }
     return (
       <Segment>
-        <Header> Matchups </Header>
-        <Dropdown
+      <Header>Matchups</Header>
+      <Form>
+        <Form.Dropdown
           placeholder="Select Fighter"
           fluid
           search
@@ -51,11 +47,26 @@ class Matchup extends Component {
           options={options}
           onChange={this.handleChangeMatchup}
         />
-        <br />
-        <p>{this.state.matchup_text}</p>
-      </Segment>
+          <ReactMarkdown
+            source={text}
+          />
+      </Form>
+    </Segment>
     );
   }
 }
 
-export { Matchup };
+const mapStateToProps = state => {
+  return {
+    matchups: state.fighterReducer.matchups
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Matchup);

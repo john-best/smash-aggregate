@@ -11,15 +11,14 @@ import {
   Loader
 } from "semantic-ui-react";
 import fighters from "./fighterlist/characters";
-import { Matchup } from "./common/Matchup";
 import { FaDiscord } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import shortid from "shortid";
 import { connect } from "react-redux";
 import { fighterActions } from "../actions/fighterActions";
 import { bindActionCreators } from "redux";
 import DescriptionEditor from "./editor/DescriptionEditor";
 import SegmentManager from "./editor/SegmentManager";
+import MatchupEditor from "./editor/MatchupEditor";
 
 class FighterEdit extends Component {
   constructor(props) {
@@ -105,7 +104,7 @@ class FighterEdit extends Component {
                 />
               </Card.Group>
 
-              <Matchup edit={true} />
+              <MatchupEditor />
 
               <SegmentManager />
               <Button.Group>

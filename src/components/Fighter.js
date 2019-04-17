@@ -15,7 +15,7 @@ import {
 import { FaDiscord } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-import { Matchup } from "./common/Matchup";
+import Matchup from "./common/Matchup";
 import { fighterActions } from "../actions/fighterActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -120,7 +120,7 @@ class Fighter extends Component {
                 />
               </Card.Group>
 
-              <Matchup edit={false} />
+              <Matchup />
 
               {segments}
             </>
@@ -136,7 +136,7 @@ class Fighter extends Component {
 const mapStateToProps = state => {
   if (state.fighterReducer.fighter_loaded === true) {
     document.title =
-      "Smash Aggregate - " + state.fighterReducer.fighter_name + " (edit)";
+      "Smash Aggregate - " + state.fighterReducer.fighter_name;
     return {
       discord_url: state.fighterReducer.discord_url,
       fighter_name: state.fighterReducer.fighter_name,

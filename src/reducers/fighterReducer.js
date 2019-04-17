@@ -83,6 +83,11 @@ export default function fighterReducer(state = {}, action) {
 
       return { ...state, segments, segment_ids };
 
+    case types.MATCHUP_UPDATE_TEXT:
+      var matchups = {...state.matchups}
+      matchups[action.fighter] = action.text
+      return { ...state, matchups}
+
     default:
       return state;
   }

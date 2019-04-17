@@ -8,7 +8,7 @@ export var data = {
 
   description:
     "she's not smash 4 zss but she's still good (but buff her anyways)",
-  matchups: { mario: "", donkey_kong: "" },
+  matchups: { "mario": "No text set.", "donkey_kong": "he's combo food" },
 
   segments: {
     "1abc": {

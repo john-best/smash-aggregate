@@ -9,7 +9,8 @@ export const fighterActions = {
     updateSegmentLinkParam,
     deleteSegment,
     addSegment,
-    addSegmentLink
+    addSegmentLink,
+    updateMatchupText
 }
 
 function loadFighter(fighter) {
@@ -94,6 +95,16 @@ function addSegment() {
 
         function add() {
             return { type: types.SEGMENT_ADD, segment_id: shortid.generate(), segment: {type: "text", text: "", edit: true} }
+        }
+    }
+}
+
+function updateMatchupText(fighter, text) {
+    return dispatch => {
+        dispatch(edit(fighter, text))
+
+        function edit(fighter, text) {
+            return { type: types.MATCHUP_UPDATE_TEXT, fighter: fighter, text: text}
         }
     }
 }
