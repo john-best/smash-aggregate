@@ -64,11 +64,6 @@ class FighterEdit extends Component {
                 <Image avatar src={this.props.icon} />{" "}
                 {this.props.fighter_name}{" "}
               </Header>
-              <Message
-                header="Work In Progress!"
-                content="This page currently serves as an example of what a fighter page could look like. Nothing is set in stone yet."
-                icon={<Icon name="exclamation" />}
-              />
 
               <DescriptionEditor />
 
@@ -107,6 +102,7 @@ class FighterEdit extends Component {
               <MatchupEditor />
 
               <SegmentManager />
+              
               <Button.Group>
                 <Button>Save</Button>
                 <Button.Or />

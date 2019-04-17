@@ -25,6 +25,14 @@ class LinkEditor extends React.PureComponent {
     );
   };
 
+  addLink = (event, target) => {
+    this.props.actions.addSegmentLink(this.props.segment_id, this.props.link_id)
+  }
+
+  delLink = (event, target) => {
+    this.props.actions.delSegmentLink(this.props.segment_id, this.props.link_id)
+  }
+
   render() {
     let link = null;
 
@@ -59,8 +67,8 @@ class LinkEditor extends React.PureComponent {
             <Button width={1} icon="arrow down" />
           </Button.Group>
           <Button.Group>
-            <Button width={1} icon="add" />
-            <Button width={1} icon="delete" />
+            <Button width={1} icon="add" onClick={this.addLink} />
+            <Button width={1} icon="delete" onClick={this.delLink} />
           </Button.Group>
         </Form.Group>
       );

@@ -74,5 +74,5 @@ export default [
 {id: '68', fighter_name: "Isabelle", url: "isabelle", title: "The Mayor's Assistant", image: "/fighters_img/shizue.png", icon: "/fighters_icon/isabelle.png"},
 {id: '69', fighter_name: "Incineroar", url: "incineroar", title: "The Ring's Raging Flame", image: "/fighters_img/gaogaen.png", icon: "/fighters_icon/incineroar.png"},
 {id: '70', fighter_name: "Piranha Plant", url: "piranha_plant", title: "Bloom of Your Doom", image: "/fighters_img/packun_flower.png", icon: "/fighters_icon/piranha_plant.png"},
-{id: '71', fighter_name: "Joker", url: "joker", title: "", image: "", icon: ""},
+{id: '71', fighter_name: "Joker", url: "joker", title: "", image: "/fighters_img/joker.png", icon: ""},
 ]

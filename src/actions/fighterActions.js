@@ -10,7 +10,8 @@ export const fighterActions = {
     deleteSegment,
     addSegment,
     addSegmentLink,
-    updateMatchupText
+    delSegmentLink,
+    updateMatchupText,
 }
 
 function loadFighter(fighter) {
@@ -58,15 +59,26 @@ function updateSegmentLinkParam(segment_id, link_id, name, value) {
     }
 }
 
-function addSegmentLink(segment_id) {
+function addSegmentLink(segment_id, link_id) {
     return dispatch => {
   
-      dispatch(add(segment_id))
+      dispatch(add(segment_id, link_id))
 
-      function add(segment_id) {
-        return { type: types.SEGMENT_LINK_ADD, segment_id: segment_id, link_id: shortid.generate(), title: "", url: "", link_type: "linkify" }
+      function add(segment_id, link_id) {
+        return { type: types.SEGMENT_LINK_ADD, segment_id: segment_id, link_id: link_id, new_id: shortid.generate(), title: "", url: "", link_type: "linkify" }
       }
     }
+}
+
+function delSegmentLink(segment_id, link_id) {
+    return dispatch => {
+  
+        dispatch(del(segment_id, link_id))
+  
+        function del(segment_id, link_id) {
+          return { type: types.SEGMENT_LINK_DEL, segment_id: segment_id, link_id: link_id }
+        }
+      }
 }
 
 function updateDescription(value) {
@@ -108,5 +120,6 @@ function updateMatchupText(fighter, text) {
         }
     }
 }
+
 
 

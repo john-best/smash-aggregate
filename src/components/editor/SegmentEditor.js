@@ -62,8 +62,8 @@ class SegmentEditor extends Component {
       let links = null;
 
       let link_ids;
-      if (this.props.segment.link_ids === undefined) {
-        this.props.actions.addSegmentLink(this.props.id);
+      if (this.props.link_ids === undefined) {
+        this.props.actions.addSegmentLink(this.props.id, undefined);
         link_ids = [];
 
         // i shouldn't be doing this, but it works for now...
@@ -72,7 +72,7 @@ class SegmentEditor extends Component {
 
     
       } else {
-        link_ids = [...this.props.segment.link_ids];
+        link_ids = this.props.link_ids;
       }
 
       if (this.props.segment.edit) {
@@ -188,7 +188,8 @@ class SegmentEditor extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    segment: state.fighterReducer.segments[ownProps.id]
+    segment: state.fighterReducer.segments[ownProps.id],
+    link_ids: state.fighterReducer.segments[ownProps.id].link_ids
   };
 };
 
