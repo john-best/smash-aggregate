@@ -55,6 +55,14 @@ class SegmentEditor extends Component {
       this.props.actions.deleteSegment(this.props.id);
   }
 
+  moveSegmentUp = () => {
+    this.props.actions.moveSegment(this.props.id, "up")
+  }
+
+  moveSegmentDown = () => {
+    this.props.actions.moveSegment(this.props.id, "down")
+  }
+
   render() {
     let editor = null;
 
@@ -170,13 +178,13 @@ class SegmentEditor extends Component {
                 width={1}
                 icon="arrow up"
                 direction="up"
-                onClick={() => {}}
+                onClick={this.moveSegmentUp}
               />
               <Button
                 width={1}
                 icon="arrow down"
                 direction="down"
-                onClick={() => {}}
+                onClick={this.moveSegmentDown}
               />
             </Button.Group>
           </span>

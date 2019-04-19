@@ -4,14 +4,16 @@ import shortid from "shortid";
 
 export const fighterActions = {
     loadFighter,
-    updateSegmentParam,
     updateDescription,
-    updateSegmentLinkParam,
-    deleteSegment,
+    updateMatchupText,
     addSegment,
+    deleteSegment,
+    moveSegment,
+    updateSegmentParam,
     addSegmentLink,
     delSegmentLink,
-    updateMatchupText,
+    moveSegmentLink,
+    updateSegmentLinkParam,
 }
 
 function loadFighter(fighter) {
@@ -37,6 +39,56 @@ function loadFighter(fighter) {
     }
 }
 
+function updateDescription(value) {
+    return dispatch => {
+        dispatch(update(value))
+
+        function update(value) {
+            return { type: types.DESCRIPTION_UPDATE_TEXT, value: value }
+        }
+    }
+}
+
+function updateMatchupText(fighter, text) {
+    return dispatch => {
+        dispatch(edit(fighter, text))
+
+        function edit(fighter, text) {
+            return { type: types.MATCHUP_UPDATE_TEXT, fighter: fighter, text: text}
+        }
+    }
+}
+
+function addSegment() {
+    return dispatch => {
+        dispatch(add())
+
+        function add() {
+            return { type: types.SEGMENT_ADD, segment_id: shortid.generate(), segment: {type: "text", text: "", edit: true} }
+        }
+    }
+}
+
+function deleteSegment(segment_id) {
+    return dispatch => {
+        dispatch(del(segment_id))
+
+        function del(segment_id) {
+            return { type: types.SEGMENT_DELETE, segment_id: segment_id }
+        }
+    }
+}
+
+function moveSegment(segment_id, direction) {
+    return dispatch => {
+        dispatch(move(segment_id, direction))
+    }
+
+    function move(segment_id, direction) {
+        return { type: types.SEGMENT_MOVE, segment_id: segment_id, direction: direction }
+    }
+}
+
 function updateSegmentParam(id, name, value) {
     return dispatch => {
   
@@ -44,17 +96,6 @@ function updateSegmentParam(id, name, value) {
 
       function update(id, name, value) {
         return { type: types.SEGMENT_UPDATE_PARAM, name: name,  id: id, value: value }
-      }
-    }
-}
-
-function updateSegmentLinkParam(segment_id, link_id, name, value) {
-    return dispatch => {
-  
-      dispatch(update(segment_id, link_id, name, value))
-
-      function update(segment_id, link_id, name, value) {
-        return { type: types.SEGMENT_LINK_UPDATE_PARAM, segment_id: segment_id, link_id: link_id, name: name, value: value }
       }
     }
 }
@@ -81,45 +122,23 @@ function delSegmentLink(segment_id, link_id) {
       }
 }
 
-function updateDescription(value) {
+function moveSegmentLink(segment_id, link_id, direction) {
     return dispatch => {
-        dispatch(update(value))
+        dispatch(move(segment_id, link_id, direction))
+    }
 
-        function update(value) {
-            return { type: types.DESCRIPTION_UPDATE_TEXT, value: value }
-        }
+    function move(segment_id, link_id, direction) {
+        return { type: types.SEGMENT_LINK_MOVE, segment_id: segment_id, link_id: link_id, direction: direction }
     }
 }
 
-function deleteSegment(segment_id) {
+function updateSegmentLinkParam(segment_id, link_id, name, value) {
     return dispatch => {
-        dispatch(del(segment_id))
+  
+      dispatch(update(segment_id, link_id, name, value))
 
-        function del(segment_id) {
-            return { type: types.SEGMENT_DELETE, segment_id: segment_id }
-        }
+      function update(segment_id, link_id, name, value) {
+        return { type: types.SEGMENT_LINK_UPDATE_PARAM, segment_id: segment_id, link_id: link_id, name: name, value: value }
+      }
     }
 }
-
-function addSegment() {
-    return dispatch => {
-        dispatch(add())
-
-        function add() {
-            return { type: types.SEGMENT_ADD, segment_id: shortid.generate(), segment: {type: "text", text: "", edit: true} }
-        }
-    }
-}
-
-function updateMatchupText(fighter, text) {
-    return dispatch => {
-        dispatch(edit(fighter, text))
-
-        function edit(fighter, text) {
-            return { type: types.MATCHUP_UPDATE_TEXT, fighter: fighter, text: text}
-        }
-    }
-}
-
-
-
