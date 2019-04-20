@@ -62,11 +62,11 @@ function saveFighter(fighter) {
     }
 
     function success() {
-        return { type: types.FIGHTER_LOAD_SUCCESS, isSaving: false }
+        return { type: types.FIGHTER_SAVE_SUCCESS, isSaving: false }
     }
 
     function failure(error) {
-        return { type: types.FIGHTER_LOAD_FAILURE, isSaving: false, error: error }
+        return { type: types.FIGHTER_SAVE_FAILURE, isSaving: false, error: error }
     }
 }
 

@@ -2,6 +2,7 @@ const express = require("express");
 var bodyParser = require("body-parser");
 var cors = require("cors");
 var axios = require("axios");
+var qs = require("querystring");
 const app = express();
 var credentials = require("./credentials");
 
@@ -23,32 +24,56 @@ app.post("/fighter/:fighter", (req, res, next) => {
 
 // check discord authorization here
 app.get("/authorization", (req, res, next) => {
-  console.log(req.query);
-
-  console.log(req.query.code);
-  let discord_token = req.query.code;
-
-  let data = JSON.stringify({
-    client_id: credentials.client_id,
-    client_secret: credentials.client_secret,
-    grant_type: "authorization_code",
-    code: discord_token,
-    redirect_uri: "http://localhost:3001/authorization",
-    scope: "identify"
-  });
-
   axios
-    .post("https://discordapp.com/api/oauth2/token", data, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" }
-    })
+    .post(
+      "https://discordapp.com/api/oauth2/token",
+      qs.stringify({
+        client_id: credentials.client_id,
+        client_secret: credentials.client_secret,
+        grant_type: "authorization_code",
+        code: req.query.code,
+        redirect_uri: "http://localhost:3001/authorization",
+        scope: "identify"
+      }),
+      {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      }
+    )
     .then(response => {
-      console.log(response);
+      let access_token = response.data.access_token;
+      let token_type = response.data.token_type;
+
+      axios
+        .get("https://discordapp.com/api/users/@me", {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: token_type + " " + access_token
+          }
+        })
+        .then(response => {
+          let username = response.data.username;
+          let discriminator = response.data.discriminator;
+          let user_id = response.data.id;
+
+          res.json({ success: true, username, discriminator, user_id });
+        })
+        .catch(error => {
+          console.log("There was an error grabbing user information.");
+          console.log(error);
+          res.json({
+            success: false,
+            error: "There was an error grabbing user information."
+          });
+        });
     })
     .catch(error => {
+      console.log("There was an error generating an access token.");
       console.log(error);
+      res.json({
+        success: false,
+        error: "There was an error generating an access token."
+      });
     });
-
-  res.json({ status: "success" });
 });
 
 app.listen(3001, () => console.log("Example app listening on port 3001!"));
