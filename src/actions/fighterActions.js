@@ -1,9 +1,11 @@
 import * as types from "./actionTypes";
 import { data } from "../components/tempdata";
 import shortid from "shortid";
+import axios from "axios";
 
 export const fighterActions = {
     loadFighter,
+    saveFighter,
     updateDescription,
     updateMatchupText,
     addSegment,
@@ -36,6 +38,35 @@ function loadFighter(fighter) {
 
     function failure(error) {
         return { type: types.FIGHTER_LOAD_FAILURE, isLoading: false, error: error }
+    }
+}
+
+function saveFighter(fighter) {
+    return (dispatch, getState) => {
+
+        console.log("saving fighter: " + fighter)
+        dispatch(request());
+
+        axios.post('http://localhost:3001/fighter/' + fighter, {
+            data: JSON.stringify(getState().fighterReducer)
+        }).then(response => {
+            console.log(response)
+        })
+
+        
+        dispatch(success(data))
+    };
+
+    function request() {
+        return { type: types.FIGHTER_SAVE_REQUEST, isSaving: true }
+    }
+
+    function success() {
+        return { type: types.FIGHTER_LOAD_SUCCESS, isSaving: false }
+    }
+
+    function failure(error) {
+        return { type: types.FIGHTER_LOAD_FAILURE, isSaving: false, error: error }
     }
 }
 

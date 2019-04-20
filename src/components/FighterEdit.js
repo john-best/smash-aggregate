@@ -40,6 +40,10 @@ class FighterEdit extends Component {
     this.props.actions.addSegment()
   }
 
+  saveFighter = () => {
+    this.props.actions.saveFighter(this.props.match.params.fighter)
+  }
+
   // TODO: load from database, but we don't actually have a databse yet lmao
   // for now, just generate how the webpage SHOULD look like!
 
@@ -104,7 +108,7 @@ class FighterEdit extends Component {
               <SegmentManager />
               
               <Button.Group>
-                <Button>Save</Button>
+                <Button onClick={this.saveFighter}>Save</Button>
                 <Button.Or />
                 <Button
                   as={Link}

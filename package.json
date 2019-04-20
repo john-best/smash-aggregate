@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@welldone-software/why-did-you-render": "^3.0.3",
+    "axios": "^0.18.0",
     "connected-react-router": "^6.3.2",
     "immer": "^2.1.5",
     "immutable": "^4.0.0-rc.12",
