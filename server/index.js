@@ -23,7 +23,7 @@ app.post("/fighter/:fighter", (req, res, next) => {
 });
 
 // check discord authorization here
-app.get("/authorization", (req, res, next) => {
+app.post("/verify_oauth2", (req, res, next) => {
   axios
     .post(
       "https://discordapp.com/api/oauth2/token",
@@ -31,8 +31,8 @@ app.get("/authorization", (req, res, next) => {
         client_id: credentials.client_id,
         client_secret: credentials.client_secret,
         grant_type: "authorization_code",
-        code: req.query.code,
-        redirect_uri: "http://localhost:3001/authorization",
+        code: req.body.code,
+        redirect_uri: req.body.uri,
         scope: "identify"
       }),
       {
@@ -40,8 +40,11 @@ app.get("/authorization", (req, res, next) => {
       }
     )
     .then(response => {
+
+      console.log(response.data)
       let access_token = response.data.access_token;
       let token_type = response.data.token_type;
+      let refresh_token = response.data.refresh_token
 
       axios
         .get("https://discordapp.com/api/users/@me", {
@@ -54,24 +57,30 @@ app.get("/authorization", (req, res, next) => {
           let username = response.data.username;
           let discriminator = response.data.discriminator;
           let user_id = response.data.id;
+          
 
-          res.json({ success: true, username, discriminator, user_id });
+          // TODO: check against db to see which fighters user can edit
+          // but, we need react to store some sort of token so it sends it when we're saving...
+          // can we just use the auth token given by discord? so we just check for authorization before saving
+          res.json({ success: true, username, discriminator, user_id, access_token, refresh_token });
         })
         .catch(error => {
           console.log("There was an error grabbing user information.");
-          console.log(error);
-          res.json({
+          console.log(error.response.data);
+          res.send({
             success: false,
-            error: "There was an error grabbing user information."
+            error: "There was an error grabbing user information.",
+            error2: error.response.data
           });
         });
     })
     .catch(error => {
       console.log("There was an error generating an access token.");
-      console.log(error);
-      res.json({
+      console.log(error.response.data)
+      res.send({
         success: false,
-        error: "There was an error generating an access token."
+        error: "There was an error generating an access token.",
+        error2: error.response.data
       });
     });
 });

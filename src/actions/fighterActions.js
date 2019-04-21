@@ -48,7 +48,9 @@ function saveFighter(fighter) {
         dispatch(request());
 
         axios.post('http://localhost:3001/fighter/' + fighter, {
-            data: JSON.stringify(getState().fighterReducer)
+            fighter_data: JSON.stringify(getState().fighterReducer),
+            access_token: localStorage.getItem('access_token'),
+            refresh_token: localStorage.getItem('refresh_token')
         }).then(response => {
             console.log(response)
         })

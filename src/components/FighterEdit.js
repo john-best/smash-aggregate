@@ -15,6 +15,7 @@ import { FaDiscord } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { fighterActions } from "../actions/fighterActions";
+import { authActions } from "../actions/authActions";
 import { bindActionCreators } from "redux";
 import DescriptionEditor from "./editor/DescriptionEditor";
 import SegmentManager from "./editor/SegmentManager";
@@ -28,11 +29,13 @@ class FighterEdit extends Component {
       loaded: false
     };
 
-    // we could load from database for name
     document.title = "Smash Aggregate - Loading... (edit)";
   }
 
   componentDidMount() {
+    // we probably want to check if the user is allowed access to edit this page
+    // if not, we should redirect
+
     this.props.actions.loadFighter(this.props.match.params.fighter);
   }
 
@@ -43,9 +46,6 @@ class FighterEdit extends Component {
   saveFighter = () => {
     this.props.actions.saveFighter(this.props.match.params.fighter)
   }
-
-  // TODO: load from database, but we don't actually have a databse yet lmao
-  // for now, just generate how the webpage SHOULD look like!
 
   render() {
     let options = fighters.map(fighter => {
@@ -159,7 +159,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    actions: bindActionCreators(fighterActions, dispatch)
+    actions: bindActionCreators(fighterActions, dispatch),
+    authActions: bindActionCreators(authActions, dispatch)
   };
 };
 
