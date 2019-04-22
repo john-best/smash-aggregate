@@ -4,23 +4,33 @@ CREATE TABLE fighters(
   url varchar(32) unique primary key,
   icon varchar(32),
   name varchar(32),
-  description blob,
+  description text,
   discord_url varchar(64),
   discord_server_id bigint,
   kh_url varchar(64),
   ssbw_url varchar(64),
 );
 
+CREATE TABLE matchups(
+  id int unsigned auto_increment primary key,
+  fighter varchar(32),
+  opponent varchar(32),
+  m_text text,
+  foreign key (fighter) references fighters(url) on delete cascade
+)
+
 CREATE TABLE segments(
   id int unsigned auto_increment primary key,
-  index int,
+  s_index int,
   fighter varchar(32),
-  text blob,
+  s_type varchar(16),
+  s_text text,
   foreign key (fighter) references fighters(url) on delete cascade
 );
 
 CREATE TABLE links(
   id int unsigned auto_increment primary key,
+  link_type varchar(16),
   url varchar(128),
   title varchar(128),
   segment int unsigned,

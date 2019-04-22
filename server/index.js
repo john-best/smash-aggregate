@@ -8,12 +8,14 @@ var credentials = require("./credentials");
 
 var connection = mysql.createConnection({
   connectionLimit: 10,
+  multipleStatements: true,
   host     : credentials.mysql_host,
   user     : credentials.mysql_user,
   password : credentials.mysql_password,
   database : credentials.mysql_database
 });
 
+var connected = false;
 connection.connect(function(err) {
   if (err) {
     console.error('error connecting: ' + err.stack);
@@ -21,6 +23,7 @@ connection.connect(function(err) {
   }
 
   console.log('connected as id ' + connection.threadId);
+  connected = true
 });
 
 const app = express();
@@ -37,11 +40,20 @@ app.get("/fighter/:fighter", (req, res, next) => {
     res.json({success: false, error: "Could not connect to the database!"})
   }
 
-  let fighter_url = req.params.fighter;
+  var sql = "SELECT * FROM fighters WHERE url = ?; SELECT * FROM segments WHERE fighter = ? ORDER BY s_index ASC; SELECT * FROM discord_users WHERE server = ?";
+  var inserts = [req.params.fighter, req.params.fighter, req.params.fighter]
+  sql = mysql.format(sql, inserts)
 
-  // this is the part where we look through the database to find matching fighter_url (basically the key)
+  // still gotta get matchups and links if segment type is "links"
+  // also need to parse this input to make it more friendly for the front end to deal with
+  connection.query(sql, function(error, results, fields) {
+    if (error !==  null) {
+      console.log(error)
+      res.json(JSON.stringify(error));
+    }
 
-  res.json({ fighter_name: req.params.fighter });
+    res.json(JSON.parse(JSON.stringify(results)));
+  })
 });
 
 // save fighter data (edit mode), need to check authorization
@@ -123,6 +135,7 @@ app.post("/verify_oauth2", (req, res, next) => {
 });
 
 // just check if the token is valid or not
+// TODO: actually we need to check the access_token and not the code oops
 app.post("/check_oauth2", (req, res, next) => {
   axios
     .post(
