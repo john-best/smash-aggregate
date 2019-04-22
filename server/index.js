@@ -3,21 +3,58 @@ var bodyParser = require("body-parser");
 var cors = require("cors");
 var axios = require("axios");
 var qs = require("querystring");
-const app = express();
+var mysql      = require('mysql');
 var credentials = require("./credentials");
 
+var connection = mysql.createConnection({
+  connectionLimit: 10,
+  host     : credentials.mysql_host,
+  user     : credentials.mysql_user,
+  password : credentials.mysql_password,
+  database : credentials.mysql_database
+});
+
+connection.connect(function(err) {
+  if (err) {
+    console.error('error connecting: ' + err.stack);
+    return;
+  }
+
+  console.log('connected as id ' + connection.threadId);
+});
+
+const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
+
+
+
 // get fighter data
 app.get("/fighter/:fighter", (req, res, next) => {
+  if (!connected) {
+    res.json({success: false, error: "Could not connect to the database!"})
+  }
+
   let fighter_url = req.params.fighter;
+
+  // this is the part where we look through the database to find matching fighter_url (basically the key)
+
   res.json({ fighter_name: req.params.fighter });
 });
 
 // save fighter data (edit mode), need to check authorization
 app.post("/fighter/:fighter", (req, res, next) => {
+  if (!connected) {
+    res.json({success: false, error: "Could not connect to the database!"})
+  }
+
+  // check authorization here, return false if failed. also return false if user isn't allowed to modify
+
+  // here we're proabably going to have to do multiple saves or something for each schema??
+  // what happens when something gets deleted? how do we know?
+
   console.log(req.body);
   res.json({ status: "success" });
 });
@@ -82,6 +119,30 @@ app.post("/verify_oauth2", (req, res, next) => {
         error: "There was an error generating an access token.",
         error2: error.response.data
       });
+    });
+});
+
+// just check if the token is valid or not
+app.post("/check_oauth2", (req, res, next) => {
+  axios
+    .post(
+      "https://discordapp.com/api/oauth2/token",
+      qs.stringify({
+        client_id: credentials.client_id,
+        client_secret: credentials.client_secret,
+        grant_type: "authorization_code",
+        code: req.body.code,
+        redirect_uri: req.body.uri,
+        scope: "identify"
+      }),
+      {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      }
+    )
+    .then(response => {
+      res.json({valid: true})
+    }).catch(error => {
+      res.json({valid: false})
     });
 });
 
