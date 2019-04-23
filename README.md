@@ -1,68 +1,53 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Smash Aggregate
+======================
+_A Beginner's Info Hub_
 
-## Available Scripts
+A web application dedicated to aggregating character-specific resources for Super Smash Bros. Ultimate. This web application is open source, so feel free to contribute! (please!!) Check out a live version [here!](https://sa.johnbest.me)
 
-In the project directory, you can run:
+Installation
+-----------
+This web application has a frontend (React) and a backend (Node/Express), so you'll need to run two different node instances for this to work. Ideally you'll move the `server` folder outside of this repository directory since it's not a part of the frontend. The only reason why the `server` folder is here is because making another repository for the backend didn't seem like it was worth the trouble.
 
-### `npm start`
+To install the required packages needed, navigate to the root directory (where this README is) and do the following:
+```
+$ npm install
+```
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+To install the packages for the frontend, navigate into the `server` directory and run the same command.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Running
+-----------
+To run the frontend, navigate to the root directory and do the following:
+```
+$ npm start
+```
 
-### `npm test`
+To run the backend, navigate to the `server` directory and do the following:
+```
+$ node index.js
+```
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Requirements
+-----------
+This web application won't work out of the box. You will need to create a `credentials.js` file for the backend, which should be placed in the `server` directory. In this file, you must include the following:
+```js
+module.exports = {
+    client_id: "discord_client_id",
+    client_secret: "discord_client_secret",
+    mysql_host: "mysql.host.com",
+    mysql_user: "mysql-username",
+    mysql_password: "mysql-password",
+    mysql_database: "mysql_database",
+    ssl_key: "(optional) ssl key",
+    ssl_cert: "(optional) ssl cert",
+    ssl_ca: "(optional) ssl ca"
+}
+```
 
-### `npm run build`
+This web application uses MySQL/MariaDB as the database. A `db.sql` file has been provided to show the structure of the database. If you plan to not use HTTPS, you can remove the HTTPS server from `index.js`. You'll also need to update the API urls within the frontend (in the actions, and also the discord login in `Navbar.js`.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+What's Next?
+-----------
+Obviously such an application is nearly impossible to maintain due to how the metagame progresses, so the ideal situation is to have volunteers from each Smashcord help update their respective character page. There will be a Discord bot that will streamline the process to gain access to editing the pages soon.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+I'm also looking to try custom css on the frontend so a dark mode is possible, and potentially add more `segment` features. I will be looking into revamping the database layout and backend since it's not in an ideal state. Submit a pull request or contact me on Discord at John#9173 if you're willing to help!
