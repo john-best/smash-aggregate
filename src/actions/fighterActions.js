@@ -18,10 +18,10 @@ export const fighterActions = {
   updateSegmentLinkParam
 };
 
-// TODO: switch over to https and use nginx or something to make API link more user friendly
+// TODO: use nginx or something to make API link more user friendly
 // alternatively: put the api backend on heroku or something? but that means separation of server and db
 // so we'll have to do something about that too
-const API_URL = "http://mingler.org:3001";
+const API_URL = "https://johnbest.me:3002";
 function loadFighter(fighter) {
   return dispatch => {
     console.log("loading fighter: " + fighter);

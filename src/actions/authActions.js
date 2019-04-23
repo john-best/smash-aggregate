@@ -2,8 +2,8 @@ import * as types from "./actionTypes";
 import { push } from "connected-react-router";
 import axios from "axios";
 
-// not going to set up ssl just yet, so we'll use this domain that points to the server but without https
-const OAUTH2_URL = "http://mingler.org:3001/verify_oauth2";
+// todo: hide port or something
+const OAUTH2_URL = "https://johnbest.me:3002/verify_oauth2";
 const REDIRECT_URI = "https://sa.johnbest.me/oauth2";
 
 export const authActions = {
