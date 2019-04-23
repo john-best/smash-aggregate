@@ -24,7 +24,7 @@ export default class Navbar extends Component {
     const { activeItem } = this.state;
 
     return (
-      <Menu inverted>
+      <Menu inverted style={{ borderRadius: 0 }}>
         <Menu.Item>Smash Aggregate</Menu.Item>
         <Menu.Item name="home" active={activeItem === "home"} as={Link} to="/">
           Home
