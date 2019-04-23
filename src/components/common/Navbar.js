@@ -10,7 +10,7 @@ export default class Navbar extends Component {
 
   loginDiscord = () => {
     window.location.replace(
-      "https://discordapp.com/api/oauth2/authorize?client_id=565042163189022741&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Foauth2&response_type=code&scope=identify"
+      "https://discordapp.com/api/oauth2/authorize?client_id=565042163189022741&redirect_uri=https%3A%2F%2Fsa.johnbest.me%2Foauth2&response_type=code&scope=identify"
     );
   };
 

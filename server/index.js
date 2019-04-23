@@ -4,6 +4,7 @@ var cors = require("cors");
 var axios = require("axios");
 var qs = require("querystring");
 var mysql = require("mysql");
+var helmet = require("helmet");
 var credentials = require("./credentials");
 
 var connection = mysql.createConnection({
@@ -27,6 +28,7 @@ connection.connect(function(err) {
 });
 
 const app = express();
+app.use(helmet())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
