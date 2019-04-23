@@ -2,7 +2,7 @@ Smash Aggregate
 ======================
 _A Beginner's Info Hub_
 
-A web application dedicated to aggregating character-specific resources for Super Smash Bros. Ultimate. This web application is open source, so feel free to contribute! (please!!) Check out a live version [here!](https://sa.johnbest.me)
+A web application dedicated to aggregating character-specific resources for Super Smash Bros. Ultimate. This web application is open source (obviously, since you're reading this), so feel free to contribute! (please!!) Check out a live version [here!](https://sa.johnbest.me) It's using Netlify as the host, which is why the repository is formatted this way.
 
 Installation
 -----------
