@@ -16,13 +16,15 @@ CREATE TABLE matchups(
   fighter varchar(32),
   opponent varchar(32),
   m_text text,
-  foreign key (fighter) references fighters(url) on delete cascade
+  foreign key (fighter) references fighters(url) on delete cascade,
+  foreign key (opponent) references fighters(url)
 )
 
 CREATE TABLE segments(
   id int unsigned auto_increment primary key,
-  s_index int,
+  s_index int unsigned,
   fighter varchar(32),
+  title varchar(128),
   s_type varchar(16),
   s_text text,
   foreign key (fighter) references fighters(url) on delete cascade
@@ -30,6 +32,7 @@ CREATE TABLE segments(
 
 CREATE TABLE links(
   id int unsigned auto_increment primary key,
+  l_index int unsigned,
   link_type varchar(16),
   url varchar(128),
   title varchar(128),

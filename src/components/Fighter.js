@@ -77,11 +77,6 @@ class Fighter extends Component {
                   Edit
                 </Button>
               </Header>
-              <Message
-                header="Work In Progress!"
-                content="This page currently serves as an example of what a fighter page could look like. Nothing is set in stone yet."
-                icon={<Icon name="exclamation" />}
-              />
 
               <Segment>
                 <Header> Description </Header>
@@ -146,6 +141,7 @@ const mapStateToProps = state => {
       ssbw_url: state.fighterReducer.ssbw_url,
       segments: state.fighterReducer.segments,
       segment_ids: state.fighterReducer.segment_ids,
+      description: state.fighterReducer.description,
       loaded: true
     };
   } else {
