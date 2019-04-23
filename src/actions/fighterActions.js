@@ -1,7 +1,7 @@
 import * as types from "./actionTypes";
-import { data } from "../components/tempdata";
 import shortid from "shortid";
 import axios from "axios";
+import { push } from "connected-react-router";
 
 export const fighterActions = {
   loadFighter,
@@ -26,17 +26,15 @@ function loadFighter(fighter) {
     axios
       .get("http://localhost:3001/fighter/" + fighter)
       .then(response => {
-
-        console.log(response.data)
+        console.log(response.data);
 
         let res_data = response.data;
 
         let data = {};
-        data.icon = res_data.fighter.icon;
         data.fighter_name = res_data.fighter.name;
         data.fighter_url = fighter;
 
-        data.description = res_data.fighter.description;
+        data.description = res_data.fighter.description === null ? "" : res_data.fighter.description;
 
         data.discord_url = res_data.fighter.discord_url;
         data.kh_url = res_data.fighter.kh_url;
@@ -44,28 +42,39 @@ function loadFighter(fighter) {
 
         data.matchups = {};
         res_data.fighter.matchups.forEach(matchup => {
-            data.matchups = {[matchup.opponent]: matchup.m_text}
-        })
+          data.matchups = { [matchup.opponent]: matchup.m_text };
+        });
 
         // in the server we sorted by segment, index, so this should always generate the correct result.
         // this is also really bad runtime complexity, probably, so we should find another way to do this maybe
-        let temp_links = {}
-        let temp_link_ids = {}
-        res_data.fighter.links.forEach(link => {
-            if (!(link.segment in temp_links)) {
-                temp_links[link.segment] = {}
-                temp_link_ids[link.segment] = []
-            }
+        let temp_links = {};
+        let temp_link_ids = {};
 
-            temp_links[link.segment][link.id] = {title: link.title, url: link.url, type: link.link_type}
-            temp_link_ids[link.segment].push(link.id)
-        })
+        res_data.fighter.links.forEach(link => {
+          if (!(link.segment in temp_links)) {
+            temp_links[link.segment] = {};
+            temp_link_ids[link.segment] = [];
+          }
+
+          temp_links[link.segment][link.id] = {
+            title: link.title,
+            url: link.url,
+            type: link.link_type
+          };
+          temp_link_ids[link.segment].push(link.id);
+        });
 
         data.segments = {};
         data.segment_ids = [];
         res_data.fighter.segments.forEach(segment => {
-            data.segments[segment.id] = { type: segment.s_type, title: segment.title, text: segment.s_text, links: temp_links[segment.id], link_ids: temp_link_ids[segment.id] }
-            data.segment_ids.push(segment.id)
+          data.segments[segment.id] = {
+            type: segment.s_type,
+            title: segment.title,
+            text: segment.s_text,
+            links: temp_links[segment.id],
+            link_ids: temp_link_ids[segment.id] ? temp_link_ids[segment.id] : []
+          };
+          data.segment_ids.push(segment.id);
         });
 
         dispatch(success(data));
@@ -93,17 +102,59 @@ function saveFighter(fighter) {
     console.log("saving fighter: " + fighter);
     dispatch(request());
 
-    axios
-      .post("http://localhost:3001/fighter/" + fighter, {
-        fighter_data: JSON.stringify(getState().fighterReducer),
-        access_token: localStorage.getItem("access_token"),
-        refresh_token: localStorage.getItem("refresh_token")
-      })
-      .then(response => {
-        console.log(response);
-      });
 
-    dispatch(success(data));
+    let data_save = getState().fighterReducer;
+    let data = {};
+    data.description = data_save.description;
+    data.matchups = []
+    for (var key in data_save.matchups) {
+        data.matchups.push({[key]: data_save.matchups[key]})
+    }
+
+    data.segments = []
+    data.links = []
+
+    data_save.segment_ids.forEach((id, index) => {
+        data.segments.push({
+            index: index,
+            id: id,
+            ...data_save.segments[id]
+        })
+
+        if (data_save.segments[id].link_ids !== undefined) {
+            data_save.segments[id].link_ids.forEach((l_id, l_index) => {
+                data.links.push({
+                    index: l_index,
+                    id: l_id,
+                    segment_id: id,
+                    ...data_save.segments[id].links[l_id]
+                })
+            })
+        }
+    })
+
+    // so like, should i be passing in the access token via header? makes more sense that way but...
+    // also TODO: refresh token
+    axios
+      .post(
+        "http://localhost:3001/fighter/" + fighter,
+        {
+          fighter_data: JSON.stringify(data),
+          access_token: localStorage.getItem("access_token"),
+        }
+      )
+      .then(response => {
+          console.log(response.data)
+        if (response.data.result === "success") {
+            dispatch(success())
+            dispatch(push("/fighters/" + fighter))
+        } else {
+            throw Error("Saving failed: " + response.data.error)
+        }
+      }).catch(error => {
+          console.log(error)
+          dispatch(failure(error))
+      });
   };
 
   function request() {

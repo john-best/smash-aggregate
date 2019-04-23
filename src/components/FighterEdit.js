@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import Navbar from "./common/Navbar";
 import {
-  Message,
-  Icon,
   Container,
   Card,
   Header,
@@ -65,8 +63,8 @@ class FighterEdit extends Component {
           {this.props.loaded === true ? (
             <>
               <Header>
-                <Image avatar src={this.props.icon} />{" "}
-                {this.props.fighter_name}{" "}
+                <Image avatar src={fighters.find(o => o.url === this.props.match.params.fighter).icon} />
+                {this.props.fighter_name}
               </Header>
 
               <DescriptionEditor />
@@ -147,7 +145,6 @@ const mapStateToProps = state => {
         discord_url: state.fighterReducer.discord_url,
         fighter_name: state.fighterReducer.fighter_name,
         fighter_url: state.fighterReducer.fighter_url,
-        icon: state.fighterReducer.icon,
         kh_url: state.fighterReducer.kh_url,
         ssbw_url: state.fighterReducer.ssbw_url,
         loaded: true

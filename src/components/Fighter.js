@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Navbar from "./common/Navbar";
 import {
   Button,
-  Message,
   Icon,
   Container,
   Card,
@@ -20,12 +19,11 @@ import { fighterActions } from "../actions/fighterActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import ReactMarkdown from "react-markdown";
+import fighters from "./fighterlist/characters";
 
 class Fighter extends Component {
   constructor(props) {
     super(props);
-
-    // we could load from database for name
     document.title = "Smash Aggregate - Loading...";
   }
 
@@ -33,34 +31,39 @@ class Fighter extends Component {
     this.props.actions.loadFighter(this.props.match.params.fighter);
   }
 
-  // TODO: load from database, but we don't actually have a databse yet lmao
-  // for now, just generate how the webpage SHOULD look like!
   render() {
     let segments = [];
     if (this.props.loaded === true) {
-      segments = this.props.segment_ids.map((id) => {
+      segments = this.props.segment_ids.map(id => {
         if (this.props.segments[id].type === "text") {
           return (
-          <Segment key={id}>
-          <Header> {this.props.segments[id].title} </Header>
-          <ReactMarkdown source={this.props.segments[id].text} />
-          </Segment>)
+            <Segment key={id}>
+              <Header> {this.props.segments[id].title} </Header>
+              <ReactMarkdown source={this.props.segments[id].text} />
+            </Segment>
+          );
         } else if (this.props.segments[id].type === "links") {
           return (
             <Segment key={id}>
-            <Header> {this.props.segments[id].title} </Header>
-            <List divided relaxed selection>
-            {this.props.segments[id].link_ids.map(link_id => {
-              var link = this.props.segments[id].links[link_id]
-              return <List.Item key={link_id} icon={link.type} content={<a href={link.url}>{link.title}</a>}/>
-            }
-            )}
-            </List>
+              <Header> {this.props.segments[id].title} </Header>
+              <List divided relaxed selection>
+                {this.props.segments[id].link_ids.map(link_id => {
+                  var link = this.props.segments[id].links[link_id];
+                  return (
+                    <List.Item
+                      key={link_id}
+                      icon={link.type}
+                      content={<a href={link.url}>{link.title}</a>}
+                    />
+                  );
+                })}
+              </List>
             </Segment>
-          )
+          );
         }
-      })
+      });
     }
+
     return (
       <div>
         <Navbar active="fighters" />
@@ -68,7 +71,15 @@ class Fighter extends Component {
           {this.props.loaded === true ? (
             <>
               <Header>
-                <Image avatar src={this.props.icon} /> {this.props.fighter_name}{" "}
+                <Image
+                  avatar
+                  src={
+                    fighters.find(
+                      o => o.url === this.props.match.params.fighter
+                    ).icon
+                  }
+                />{" "}
+                {this.props.fighter_name}{" "}
                 <Button
                   as={Link}
                   to={this.props.match.url + "/edit"}
@@ -80,7 +91,7 @@ class Fighter extends Component {
 
               <Segment>
                 <Header> Description </Header>
-                {this.props.description}
+                <ReactMarkdown source={this.props.description} />
               </Segment>
 
               <Card.Group centered={true} itemsPerRow={3}>
@@ -130,13 +141,11 @@ class Fighter extends Component {
 
 const mapStateToProps = state => {
   if (state.fighterReducer.fighter_loaded === true) {
-    document.title =
-      "Smash Aggregate - " + state.fighterReducer.fighter_name;
+    document.title = "Smash Aggregate - " + state.fighterReducer.fighter_name;
     return {
       discord_url: state.fighterReducer.discord_url,
       fighter_name: state.fighterReducer.fighter_name,
       fighter_url: state.fighterReducer.fighter_url,
-      icon: state.fighterReducer.icon,
       kh_url: state.fighterReducer.kh_url,
       ssbw_url: state.fighterReducer.ssbw_url,
       segments: state.fighterReducer.segments,

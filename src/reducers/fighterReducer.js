@@ -64,9 +64,19 @@ export default function fighterReducer(state = {}, action) {
 
       if (action.direction == "up") {
         var index = segment_ids.indexOf(action.segment_id);
+        if (index === 0) {
+          console.log("User tried to move top segment even higher!");
+          return state;
+        }
+
         segment_ids.splice(index - 1, 0, segment_ids.splice(index, 1)[0]);
       } else {
         var index = segment_ids.indexOf(action.segment_id);
+        if (index === segment_ids.length - 1) {
+          console.log("User tried to move bottom segment even lower!");
+          return state;
+        }
+        
         segment_ids.splice(index + 1, 0, segment_ids.splice(index, 1)[0]);
       }
 
@@ -118,21 +128,31 @@ export default function fighterReducer(state = {}, action) {
       return { ...state, segments };
 
     case types.SEGMENT_LINK_MOVE:
-    var segments = { ...state.segments };
-    var link_ids = [...state.segments[action.segment_id].link_ids];
+      var segments = { ...state.segments };
+      var link_ids = [...state.segments[action.segment_id].link_ids];
 
-    if (action.direction == "up") {
-      var index = link_ids.indexOf(action.link_ids);
-      link_ids.splice(index - 1, 0, link_ids.splice(index, 1)[0]);
-    } else {
-      var index = link_ids.indexOf(action.link_ids);
-      link_ids.splice(index + 1, 0, link_ids.splice(index, 1)[0]);
-    }
+      console.log("moving " + action.link_id + " " + action.direction);
 
-    segments[action.segment_id].link_ids = link_ids
+      if (action.direction == "up") {
+        var index = link_ids.indexOf(action.link_id);
+        if (index === 0) {
+          console.log("User tried to move top link even higher!");
+          return state;
+        }
 
-    return { ...state, segments };
+        link_ids.splice(index - 1, 0, link_ids.splice(index, 1)[0]);
+      } else {
+        var index = link_ids.indexOf(action.link_id);
+        if (index === link_ids.length - 1) {
+          console.log("User tried to move bottom link even lower!");
+          return state;
+        }
 
+        link_ids.splice(index + 1, 0, link_ids.splice(index, 1)[0]);
+      }
+
+      segments[action.segment_id].link_ids = link_ids;
+      return { ...state, segments };
 
     case types.SEGMENT_LINK_UPDATE_PARAM:
       var segments = { ...state.segments };

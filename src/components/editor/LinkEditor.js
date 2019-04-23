@@ -33,6 +33,14 @@ class LinkEditor extends React.PureComponent {
     this.props.actions.delSegmentLink(this.props.segment_id, this.props.link_id)
   }
 
+  moveLinkUp = () => {
+    this.props.actions.moveSegmentLink(this.props.segment_id, this.props.link_id, "up")
+  }
+
+  moveLinkDown = () => {
+    this.props.actions.moveSegmentLink(this.props.segment_id, this.props.link_id, "down")
+  }
+
   render() {
     let link = null;
 
@@ -63,8 +71,8 @@ class LinkEditor extends React.PureComponent {
           />
 
           <Button.Group>
-            <Button width={1} icon="arrow up" />
-            <Button width={1} icon="arrow down" />
+            <Button width={1} icon="arrow up" onClick={this.moveLinkUp} />
+            <Button width={1} icon="arrow down" onClick={this.moveLinkDown} />
           </Button.Group>
           <Button.Group>
             <Button width={1} icon="add" onClick={this.addLink} />
