@@ -18,13 +18,17 @@ export const fighterActions = {
   updateSegmentLinkParam
 };
 
+// TODO: switch over to https and use nginx or something to make API link more user friendly
+// alternatively: put the api backend on heroku or something? but that means separation of server and db
+// so we'll have to do something about that too
+const API_URL = "http://mingler.org:3001";
 function loadFighter(fighter) {
   return dispatch => {
     console.log("loading fighter: " + fighter);
     dispatch(request());
 
     axios
-      .get("http://localhost:3001/fighter/" + fighter)
+      .get(API_URL + "/fighter/" + fighter)
       .then(response => {
         console.log(response.data);
 
@@ -34,7 +38,10 @@ function loadFighter(fighter) {
         data.fighter_name = res_data.fighter.name;
         data.fighter_url = fighter;
 
-        data.description = res_data.fighter.description === null ? "" : res_data.fighter.description;
+        data.description =
+          res_data.fighter.description === null
+            ? ""
+            : res_data.fighter.description;
 
         data.discord_url = res_data.fighter.discord_url;
         data.kh_url = res_data.fighter.kh_url;
@@ -102,58 +109,55 @@ function saveFighter(fighter) {
     console.log("saving fighter: " + fighter);
     dispatch(request());
 
-
     let data_save = getState().fighterReducer;
     let data = {};
     data.description = data_save.description;
-    data.matchups = []
+    data.matchups = [];
     for (var key in data_save.matchups) {
-        data.matchups.push({[key]: data_save.matchups[key]})
+      data.matchups.push({ [key]: data_save.matchups[key] });
     }
 
-    data.segments = []
-    data.links = []
+    data.segments = [];
+    data.links = [];
 
     data_save.segment_ids.forEach((id, index) => {
-        data.segments.push({
-            index: index,
-            id: id,
-            ...data_save.segments[id]
-        })
+      data.segments.push({
+        index: index,
+        id: id,
+        ...data_save.segments[id]
+      });
 
-        if (data_save.segments[id].link_ids !== undefined) {
-            data_save.segments[id].link_ids.forEach((l_id, l_index) => {
-                data.links.push({
-                    index: l_index,
-                    id: l_id,
-                    segment_id: id,
-                    ...data_save.segments[id].links[l_id]
-                })
-            })
-        }
-    })
+      if (data_save.segments[id].link_ids !== undefined) {
+        data_save.segments[id].link_ids.forEach((l_id, l_index) => {
+          data.links.push({
+            index: l_index,
+            id: l_id,
+            segment_id: id,
+            ...data_save.segments[id].links[l_id]
+          });
+        });
+      }
+    });
 
     // so like, should i be passing in the access token via header? makes more sense that way but...
     // also TODO: refresh token
     axios
-      .post(
-        "http://localhost:3001/fighter/" + fighter,
-        {
-          fighter_data: JSON.stringify(data),
-          access_token: localStorage.getItem("access_token"),
-        }
-      )
+      .post(API_URL + "/fighter/" + fighter, {
+        fighter_data: JSON.stringify(data),
+        access_token: localStorage.getItem("access_token")
+      })
       .then(response => {
-          console.log(response.data)
+        console.log(response.data);
         if (response.data.result === "success") {
-            dispatch(success())
-            dispatch(push("/fighters/" + fighter))
+          dispatch(success());
+          dispatch(push("/fighters/" + fighter));
         } else {
-            throw Error("Saving failed: " + response.data.error)
+          throw Error("Saving failed: " + response.data.error);
         }
-      }).catch(error => {
-          console.log(error)
-          dispatch(failure(error))
+      })
+      .catch(error => {
+        console.log(error);
+        dispatch(failure(error));
       });
   };
 
