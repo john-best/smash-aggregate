@@ -434,13 +434,13 @@ app.post("/check_oauth2", (req, res, next) => {
 
 app.listen(3001, () => console.log("Example app listening on port 3001!"));
 
-const credentials = {
+const ssl_credentials = {
 	key: fs.readFileSync(credentials.ssl_key, 'utf8'),
 	cert: fs.readFileSync(credentials.ssl_cert, 'utf8'),
 	ca: fs.readFileSync(credentials.ssl_ca, 'utf8')
 };
 
-const httpsServer = https.createServer(credentials, app);
+const httpsServer = https.createServer(ssl_credentials, app);
 
 httpsServer.listen(3002, () => {
 	console.log('HTTPS Server running on port 3002');
