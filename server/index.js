@@ -180,7 +180,6 @@ app.post("/fighter/:fighter", (req, res, next) => {
         });
         
         sql = mysql.format(sql, inserts);
-        console.log(sql);
 
         // let's save these changes for now, because the next changes are going to be annoying...
         var segments = JSON.parse(JSON.stringify(results[1]));
@@ -321,9 +320,6 @@ app.post("/fighter/:fighter", (req, res, next) => {
             });
 
             sql = mysql.format(sql, inserts);
-
-            console.log(sql);
-
             if (sql === "") {
               res.json({ result: "success" });
             } else {
