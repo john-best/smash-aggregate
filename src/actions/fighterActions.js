@@ -49,7 +49,7 @@ function loadFighter(fighter) {
 
         data.matchups = {};
         res_data.fighter.matchups.forEach(matchup => {
-          data.matchups = { [matchup.opponent]: matchup.m_text };
+          data.matchups[matchup.opponent] = matchup.m_text;
         });
 
         // in the server we sorted by segment, index, so this should always generate the correct result.
