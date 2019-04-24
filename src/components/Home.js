@@ -1,20 +1,8 @@
 import React, { Component } from "react";
 import Navbar from "./common/Navbar";
-import {
-  Button,
-  Container,
-  Divider,
-  Grid,
-  Header,
-  Icon,
-  Image,
-  List,
-  Menu,
-  Responsive,
-  Segment,
-  Sidebar,
-  Visibility
-} from "semantic-ui-react";
+import { Container, Header, Icon, Dropdown } from "semantic-ui-react";
+import fighters from "./fighterlist/characters";
+import { history } from "../configureStore";
 
 class Home extends Component {
   constructor(props) {
@@ -22,9 +10,25 @@ class Home extends Component {
     document.title = "Smash Aggregate - Home";
   }
 
+  loadPage = (event, target) => {
+    if (target.value !== -1) {
+      history.push("/fighters/" + target.value);
+    }
+  };
+
   // this home page probably should be an advertisement on why this site is great
   // uhh.................
   render() {
+    var options = fighters.map(fighter => {
+      return {
+        key: fighter.url,
+        value: fighter.url,
+        text: fighter.fighter_name,
+        image: { avatar: true, src: fighter.icon }
+      };
+    });
+    options.unshift({ key: -1, value: -1, text: "Select Fighter" });
+
     return (
       <div>
         <Navbar active="home" />
@@ -41,12 +45,24 @@ class Home extends Component {
           />
           <Header
             as="h2"
-            content="A website for beginners to learn more about their character."
+            content="A place for beginners to learn more about their character."
             style={{
-              fontSize:"1.7em",
+              fontSize: "1.7em",
               fontWeight: "normal",
               marginTop: "1.5em"
             }}
+          />
+
+          <Dropdown
+            placeholder="Select Fighter"
+            fluid
+            search
+            selection
+            options={options}
+            style={{
+              marginTop: "1.5em"
+            }}
+            onChange={this.loadPage}
           />
         </Container>
       </div>
