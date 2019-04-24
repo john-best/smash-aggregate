@@ -6,7 +6,7 @@ CREATE TABLE fighters(
   description text,
   discord_url varchar(64),
   discord_server_id bigint,
-  kh_url varchar(64),
+  fd_url varchar(64),
   ssbw_url varchar(64)
 );
 

@@ -81,10 +81,10 @@ class FighterEdit extends Component {
                   </Card.Content>
                 </Card>
                 <Card
-                  header="Frame Data (KH)"
-                  href={this.props.kh_url}
+                  header="Frame Data"
+                  href={this.props.fd_url}
                   description={
-                    "Kurogane Hammer's frame data and attributes for " +
+                    "Frame data and attributes for " +
                     this.props.fighter_name +
                     "."
                   }
@@ -145,7 +145,7 @@ const mapStateToProps = state => {
         discord_url: state.fighterReducer.discord_url,
         fighter_name: state.fighterReducer.fighter_name,
         fighter_url: state.fighterReducer.fighter_url,
-        kh_url: state.fighterReducer.kh_url,
+        fd_url: state.fighterReducer.fd_url,
         ssbw_url: state.fighterReducer.ssbw_url,
         loaded: true
       };

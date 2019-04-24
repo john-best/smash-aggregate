@@ -44,7 +44,7 @@ function loadFighter(fighter) {
             : res_data.fighter.description;
 
         data.discord_url = res_data.fighter.discord_url;
-        data.kh_url = res_data.fighter.kh_url;
+        data.fd_url = res_data.fighter.fd_url;
         data.ssbw_url = res_data.fighter.ssbw_url;
 
         data.matchups = {};
