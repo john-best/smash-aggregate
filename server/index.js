@@ -8,26 +8,7 @@ var helmet = require("helmet");
 const fs = require('fs');
 const https = require('https');
 var credentials = require("./credentials");
-
-var connection = mysql.createConnection({
-  //connectionLimit: 10,
-  multipleStatements: true,
-  host: credentials.mysql_host,
-  user: credentials.mysql_user,
-  password: credentials.mysql_password,
-  database: credentials.mysql_database
-});
-
-var connected = false;
-connection.connect(function(err) {
-  if (err) {
-    console.error("error connecting: " + err.stack);
-    return;
-  }
-
-  console.log("connected as id " + connection.threadId);
-  connected = true;
-});
+var connection = require('./db')
 
 const app = express();
 app.use(helmet())
@@ -36,11 +17,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // get fighter data
-app.get("/fighter/:fighter", (req, res, next) => {
-  if (!connected) {
-    res.json({ success: false, error: "Could not connect to the database!" });
-  }
-
+app.get("/fighter/:fighter", (req, res, next) => { 
   var sql =
     "SELECT * FROM fighters WHERE url = ?; SELECT * FROM segments WHERE fighter = ? ORDER BY s_index ASC; SELECT * FROM discord_users WHERE server = ?; SELECT * FROM matchups WHERE fighter = ?;";
   var inserts = [
@@ -116,10 +93,6 @@ app.get("/fighter/:fighter", (req, res, next) => {
 
 // save fighter data (edit mode), need to check authorization
 app.post("/fighter/:fighter", (req, res, next) => {
-  if (!connected) {
-    res.json({ success: false, error: "Could not connect to the database!" });
-  }
-
   // check authorization here, return false if failed. also return false if user isn't allowed to modify
   axios
     .get("https://discordapp.com/api/users/@me", {
