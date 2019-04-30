@@ -45,6 +45,7 @@ CREATE TABLE discord_users(
   id int unsigned auto_increment primary key,
   user_id bigint,
   server varchar(64),
+  isAdmin boolean default 0,
   foreign key (server) references fighters(url) on delete cascade
 );
 

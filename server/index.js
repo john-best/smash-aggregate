@@ -104,7 +104,7 @@ app.post("/fighter/:fighter", (req, res, next) => {
     .then(response => {
       // 0 = users, 1 = segments, 2 = matchups
       var sql =
-        "SELECT * FROM discord_users WHERE user_id = ? AND server = ?; SELECT * FROM segments WHERE fighter = ?; SELECT * FROM matchups WHERE fighter = ?";
+        "SELECT * FROM discord_users WHERE user_id = ? AND (server = ? OR isAdmin = 1); SELECT * FROM segments WHERE fighter = ?; SELECT * FROM matchups WHERE fighter = ?";
       var inserts = [
         response.data.id,
         req.params.fighter,
@@ -229,6 +229,8 @@ app.post("/fighter/:fighter", (req, res, next) => {
           sql = mysql.format(sql, inserts);
 
           // OK, here we can do links, which is going to be the same thing...
+          // TODO: we can prob just do 2 sql queries and not 3 by merging this one with parent one
+          // actually maybe just even 1 query since queries are done sequentially? does anything depend on something else?
           connection.query(sql, function(error, results, fields) {
             if (error) {
               res.json({ result: "failure", error: "Database error." });
