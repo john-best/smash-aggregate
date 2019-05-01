@@ -7,6 +7,7 @@ var mysql = require("mysql");
 var helmet = require("helmet");
 const fs = require('fs');
 const https = require('https');
+var striptags = require('striptags');
 var credentials = require("./credentials");
 var connection = require('./db')
 
@@ -133,7 +134,7 @@ app.post("/fighter/:fighter", (req, res, next) => {
         var fighter_data = JSON.parse(req.body.fighter_data);
         // description
         var sql = "UPDATE fighters SET description = ? WHERE url = ?;";
-        var inserts = [fighter_data.description, req.params.fighter];
+        var inserts = [striptags(fighter_data.description), req.params.fighter];
 
         // matchups
 
@@ -143,11 +144,11 @@ app.post("/fighter/:fighter", (req, res, next) => {
             if (matchups.find(o => o.opponent === key)) {
               sql +=
                 "UPDATE matchups SET m_text = ? WHERE fighter = ? AND opponent = ?;";
-              inserts.push(matchup[key], req.params.fighter, key);
+              inserts.push(striptags(matchup[key]), req.params.fighter, key);
             } else {
               sql +=
                 "INSERT INTO matchups (fighter, opponent, m_text) VALUES (?, ?, ?);";
-              inserts.push(req.params.fighter, key, matchup[key]);
+              inserts.push(req.params.fighter, key, striptags(matchup[key]));
             }
           }
         });
@@ -202,9 +203,9 @@ app.post("/fighter/:fighter", (req, res, next) => {
               segment.id,
               segment.index,
               req.params.fighter,
-              segment.title,
-              segment.type,
-              segment.text
+              striptags(segment.title),
+              striptags(segment.type),
+              striptags(segment.text)
             );
           });
 
@@ -217,9 +218,9 @@ app.post("/fighter/:fighter", (req, res, next) => {
               "UPDATE segments SET s_index = ?, title = ?, s_type = ?, s_text = ? WHERE id = ?;";
             inserts.push(
               segment.index,
-              segment.title,
-              segment.type,
-              segment.text,
+              striptags(segment.title),
+              striptags(segment.type),
+              striptags(segment.text),
               segment.id
             );
           });
@@ -273,9 +274,9 @@ app.post("/fighter/:fighter", (req, res, next) => {
               inserts.push(
                 link.id,
                 link.index,
-                link.type,
-                link.url,
-                link.title,
+                striptags(link.type),
+                striptags(link.url),
+                striptags(link.title),
                 link.segment_id,
                 req.params.fighter
               );
@@ -287,9 +288,9 @@ app.post("/fighter/:fighter", (req, res, next) => {
                 "UPDATE links SET l_index = ?, link_type = ?, url = ?, title = ? WHERE id = ?;";
               inserts.push(
                 link.index,
-                link.type,
-                link.url,
-                link.title,
+                striptags(link.type),
+                striptags(link.url),
+                striptags(link.title),
                 link.id
               );
             });
